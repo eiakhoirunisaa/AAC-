@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universal AAC · All Words (Fixed Grid)</title>
+  <title>Universal AAC · All Words + Questions</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400&display=swap');
 
@@ -18,6 +18,9 @@
       --pos-adj-bg: #D2E9FF;
       --pos-social-bg: #FFF3B0;
       --pos-routine-bg: #EAE0FF;
+
+      --question-bg: #FEF3C7;
+      --question-border: #F59E0B;
     }
 
     * {
@@ -247,6 +250,40 @@
       color: #475569;
     }
 
+    /* Small Question button (❓) next to category */
+    .category-question-btn {
+      background: #FEF3C7;
+      border: 1px solid #FDE68A;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      font-size: 1rem;
+      cursor: pointer;
+      color: #92400E;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 4px;
+      transition: all 0.15s ease;
+      padding: 0;
+      flex-shrink: 0;
+    }
+
+    .category-question-btn:hover {
+      background: #FDE68A;
+      transform: scale(1.08);
+    }
+
+    .category-question-btn:active {
+      transform: scale(0.95);
+    }
+
+    .category-question-btn.active-q {
+      background: #F59E0B;
+      color: white;
+      border-color: #D97706;
+    }
+
     /* Square Tile Grid */
     .grid-container {
       flex: 1;
@@ -295,6 +332,41 @@
     .pos-adj    { background-color: var(--pos-adj-bg); }
     .pos-social { background-color: var(--pos-social-bg); }
     .pos-routine{ background-color: var(--pos-routine-bg); }
+
+    /* Question tile style (wide card) */
+    .aac-card.question-card {
+      background-color: var(--question-bg);
+      border: 2px solid var(--question-border);
+      grid-column: span 2;
+      aspect-ratio: auto;
+      min-height: 90px;
+      padding: 12px 16px;
+      flex-direction: row;
+      justify-content: flex-start;
+      gap: 12px;
+      transform: translateY(-2px);
+    }
+
+    .aac-card.question-card:hover {
+      transform: translateY(-6px);
+      filter: brightness(1.02);
+    }
+
+    .aac-card.question-card:active {
+      transform: translateY(2px);
+    }
+
+    .aac-card.question-card .q-emoji {
+      font-size: 1.8rem;
+      flex-shrink: 0;
+    }
+
+    .aac-card.question-card span {
+      font-size: 0.95rem;
+      text-align: left;
+      line-height: 1.3;
+      font-weight: 500;
+    }
 
     .aac-card:hover {
       transform: translateY(-6px);
@@ -628,6 +700,15 @@
       display: block;
       margin-bottom: 12px;
     }
+
+    /* Question header in grid */
+    .question-header {
+      grid-column: 1 / -1;
+      padding: 10px 0 4px 0;
+      text-align: left;
+      font-size: 0.9rem;
+      color: #92400E;
+    }
   </style>
 </head>
 <body>
@@ -728,6 +809,14 @@
         <p>The <b>All Words</b> tab shows every word from all your categories in one clean, uniform grid. No badges, no extra gaps — just all your words ready to tap.</p>
       </div>
       <div class="guide-section">
+        <h3>❓ Question Button</h3>
+        <p>Tap the small <b>❓</b> button next to a category name to show its question list <b>inside the grid area</b>. Tap any question to speak it and add it to your sentence strip. Tap the ❓ button again to hide the questions.</p>
+      </div>
+      <div class="guide-section">
+        <h3>🎙️ Custom Voice</h3>
+        <p>Record your own voice for any tile. When you play a sentence, the app will use your recorded voice for those tiles automatically.</p>
+      </div>
+      <div class="guide-section">
         <h3>Features & Customization</h3>
         <p>• Tap tiles to add to the sentence strip.<br>
         • Tap <b>Edit</b> to edit/delete words and categories.<br>
@@ -785,46 +874,146 @@
   <script>
     const ALL_WORDS_KEY = "__all_words__";
 
+    // Default categories with optional question sets
     const defaultCategories = {
-      morning: {
-        name: "🌅 Morning Routine",
+      // morning: {
+      //   name: "🌅 Morning Routine",
+      //   items: [
+      //     { id: "wake", label: "Wake Up", icon: "⏰", pos: "pos-verb" },
+      //     { id: "toilet", label: "Toilet", icon: "🚽", pos: "pos-noun" },
+      //     { id: "brush_teeth", label: "Brush Teeth", icon: "🪥", pos: "pos-verb" },
+      //     { id: "wash_face", label: "Wash Face", icon: "🧼", pos: "pos-verb" },
+      //     { id: "get_dressed", label: "Get Dressed", icon: "👕", pos: "pos-routine" },
+      //     { id: "eat_breakfast", label: "Breakfast", icon: "🥣", pos: "pos-noun" }
+      //   ]
+      // },
+      // needs: {
+      //   name: "🍎 Needs & Wants",
+      //   items: [
+      //     { id: "want", label: "I Want", icon: "👉", pos: "pos-social" },
+      //     { id: "water", label: "Water", icon: "💧", pos: "pos-noun" },
+      //     { id: "hungry", label: "Hungry", icon: "🍎", pos: "pos-adj" },
+      //     { id: "help", label: "Help", icon: "🙋", pos: "pos-social" },
+      //     { id: "more", label: "More", icon: "➕", pos: "pos-verb" },
+      //     { id: "stop", label: "Stop", icon: "🛑", pos: "pos-verb" }
+      //   ]
+      // },
+      // feelings: {
+      //   name: "😊 Feelings",
+      //   items: [
+      //     { id: "feel", label: "I Feel", icon: "💭", pos: "pos-social" },
+      //     { id: "happy", label: "Happy", icon: "😊", pos: "pos-adj" },
+      //     { id: "sad", label: "Sad", icon: "😢", pos: "pos-adj" },
+      //     { id: "tired", label: "Tired", icon: "😴", pos: "pos-adj" },
+      //     { id: "hurt", label: "Hurt", icon: "🩹", pos: "pos-adj" }
+      //   ]
+      // },
+      mealtime: {
+        name: "🍽️ Mealtime",
         items: [
-          { id: "wake", label: "Wake Up", icon: "⏰", pos: "pos-verb" },
-          { id: "toilet", label: "Toilet", icon: "🚽", pos: "pos-noun" },
-          { id: "brush_teeth", label: "Brush Teeth", icon: "🪥", pos: "pos-verb" },
-          { id: "wash_face", label: "Wash Face", icon: "🧼", pos: "pos-verb" },
-          { id: "get_dressed", label: "Get Dressed", icon: "👕", pos: "pos-routine" },
-          { id: "eat_breakfast", label: "Breakfast", icon: "🥣", pos: "pos-noun" }
+          { id: "eat", label: "Eat", icon: "🍽️", pos: "pos-verb" },
+          { id: "drink", label: "Drink", icon: "🥤", pos: "pos-verb" },
+          { id: "more_food", label: "More", icon: "➕", pos: "pos-verb" },
+          { id: "all_done", label: "All Done", icon: "✅", pos: "pos-verb" },
+          { id: "yummy", label: "Yummy", icon: "😋", pos: "pos-adj" },
+          { id: "hot", label: "Hot", icon: "🔥", pos: "pos-adj" }
+        ],
+        questions: [
+          "Do you want more?",
+          "What do you want to eat?",
+          "What do you like to eat?",
+          "The food or drink is hot or cold?",
+          "The food or drink is yummy or not yummy?"
         ]
       },
-      needs: {
-        name: "🍎 Needs & Wants",
+      bathtime: {
+        name: "🛁 Bath Time",
         items: [
-          { id: "want", label: "I Want", icon: "👉", pos: "pos-social" },
-          { id: "water", label: "Water", icon: "💧", pos: "pos-noun" },
-          { id: "hungry", label: "Hungry", icon: "🍎", pos: "pos-adj" },
-          { id: "help", label: "Help", icon: "🙋", pos: "pos-social" },
-          { id: "more", label: "More", icon: "➕", pos: "pos-verb" },
-          { id: "stop", label: "Stop", icon: "🛑", pos: "pos-verb" }
+          { id: "bath", label: "Bath", icon: "🛁", pos: "pos-noun" },
+          { id: "shampoo", label: "Shampoo", icon: "🧴", pos: "pos-noun" },
+          { id: "towel", label: "Towel", icon: "🧻", pos: "pos-noun" },
+          { id: "toothbrush", label: "Toothbrush", icon: "🪥", pos: "pos-noun" },
+          { id: "toothpaste", label: "Toothpaste", icon: "🦷", pos: "pos-noun" },
+          { id: "water_bath", label: "Water", icon: "💧", pos: "pos-noun" }
+        ],
+        questions: [
+          "Do you want to take bath?",
+          "Do you want who to bath you?",
+          "What is this (shampoo / towel / toothbrush / toothpaste)?",
+          "Is the water hot or cold?",
+          "Which one do you want to wear first (shirt / pant / skirt)?",
+          "Do you like wearing (shirt / pant / skirt)?",
+          "Do you want to wear this (shirt / pant / skirt)?",
+          "What colour is this (shirt / pant / skirt)?"
         ]
       },
-      feelings: {
-        name: "😊 Feelings",
+      sleeptime: {
+        name: "😴 Sleep Time",
         items: [
-          { id: "feel", label: "I Feel", icon: "💭", pos: "pos-social" },
-          { id: "happy", label: "Happy", icon: "😊", pos: "pos-adj" },
-          { id: "sad", label: "Sad", icon: "😢", pos: "pos-adj" },
-          { id: "tired", label: "Tired", icon: "😴", pos: "pos-adj" },
-          { id: "hurt", label: "Hurt", icon: "🩹", pos: "pos-adj" }
+          { id: "sleepy", label: "Sleepy", icon: "😴", pos: "pos-adj" },
+          { id: "light_off", label: "Light Off", icon: "💡", pos: "pos-verb" },
+          { id: "pillow", label: "Pillow", icon: "🛏️", pos: "pos-noun" },
+          { id: "blanket", label: "Blanket", icon: "🧣", pos: "pos-noun" },
+          { id: "doll", label: "Doll", icon: "🧸", pos: "pos-noun" },
+          { id: "pee", label: "Pee", icon: "🚽", pos: "pos-verb" }
+        ],
+        questions: [
+          "Are you sleepy?",
+          "Do you want to switch off the light?",
+          "Who do you want to sleep with?",
+          "Do you want to pee before sleep?",
+          "What do you want to bring with you to sleep (pillow / doll / blanket)?"
         ]
       }
     };
 
-    let categories = JSON.parse(localStorage.getItem('aac_categories')) || defaultCategories;
+    /* ----------------------------------------------------------------
+       LOAD + MERGE STRATEGY
+       ----------------------------------------------------------------
+       This makes sure that if the user already has saved data from an
+       earlier version of the app (without Mealtime / Bath Time / Sleep
+       Time), those new categories + their question lists are ADDED
+       automatically. Existing user data is preserved.
+    ---------------------------------------------------------------- */
+    let categories = {};
+    try {
+      categories = JSON.parse(localStorage.getItem('aac_categories')) || {};
+    } catch (e) {
+      categories = {};
+    }
+
+    // Merge in any missing default categories
+    Object.keys(defaultCategories).forEach(key => {
+      if (!categories[key]) {
+        // Add the whole category from defaults
+        categories[key] = JSON.parse(JSON.stringify(defaultCategories[key]));
+      } else {
+        // Category exists — make sure items array exists
+        if (!Array.isArray(categories[key].items)) {
+          categories[key].items = [];
+        }
+        // If the default has questions but the saved one doesn't, add them
+        if (!categories[key].questions && defaultCategories[key].questions) {
+          categories[key].questions = [...defaultCategories[key].questions];
+        }
+      }
+    });
+
+    // If after merging there's still nothing, fall back to defaults
+    if (Object.keys(categories).length === 0) {
+      categories = JSON.parse(JSON.stringify(defaultCategories));
+    }
+
+    // Persist the merged result so subsequent loads are correct
+    localStorage.setItem('aac_categories', JSON.stringify(categories));
+
     let activeCategory = Object.keys(categories)[0] || "morning";
     let isEditMode = false;
     let editingTileId = null;
     let editingCategoryKey = null;
+
+    // Track whether questions are currently visible in the grid
+    let showQuestionsInGrid = false;
 
     let activeCard = null;
     let sentence = [];
@@ -893,6 +1082,7 @@
       allBtn.innerText = "📚 All Words";
       allBtn.onclick = () => {
         activeCategory = ALL_WORDS_KEY;
+        showQuestionsInGrid = false;
         renderTabs();
         renderGrid();
       };
@@ -903,16 +1093,39 @@
       Object.keys(categories).forEach(catKey => {
         const wrapper = document.createElement("div");
         wrapper.className = "tab-wrapper";
+        wrapper.style.display = "inline-flex";
+        wrapper.style.alignItems = "center";
 
         const btn = document.createElement("button");
         btn.className = `tab-btn ${catKey === activeCategory ? 'active' : ''}`;
         btn.innerText = categories[catKey].name;
         btn.onclick = () => {
           activeCategory = catKey;
+          showQuestionsInGrid = false;
           renderTabs();
           renderGrid();
         };
         wrapper.appendChild(btn);
+
+        // Small question button (❓) — only if category has questions
+        if (categories[catKey].questions && categories[catKey].questions.length > 0) {
+          const qBtn = document.createElement("button");
+          qBtn.className = `category-question-btn ${showQuestionsInGrid && activeCategory === catKey ? 'active-q' : ''}`;
+          qBtn.innerHTML = "❓";
+          qBtn.title = "Show / Hide Questions";
+          qBtn.onclick = (e) => {
+            e.stopPropagation();
+            if (activeCategory !== catKey) {
+              activeCategory = catKey;
+              showQuestionsInGrid = true;
+            } else {
+              showQuestionsInGrid = !showQuestionsInGrid;
+            }
+            renderTabs();
+            renderGrid();
+          };
+          wrapper.appendChild(qBtn);
+        }
 
         // Edit category button
         const editBtn = document.createElement("button");
@@ -976,6 +1189,11 @@
         addCardEl.onclick = () => openAddWordModal();
         grid.appendChild(addCardEl);
       }
+
+      // If questions are toggled on for this category, render them in the grid
+      if (showQuestionsInGrid && currentCat.questions && currentCat.questions.length > 0) {
+        renderQuestionsInGrid(grid, currentCat.questions);
+      }
     }
 
     function renderAllWordsGrid(grid) {
@@ -990,9 +1208,36 @@
       }
 
       allWords.forEach(card => {
-        // No badge, no edit/delete actions in All Words view
         const cardEl = buildTileElement(card, false);
         grid.appendChild(cardEl);
+      });
+    }
+
+    /* ---------- QUESTIONS INSIDE GRID ---------- */
+    function renderQuestionsInGrid(grid, questions) {
+      // Header
+      const header = document.createElement("div");
+      header.className = "question-header";
+      header.innerHTML = `❓ Questions for this routine — tap to speak`;
+      grid.appendChild(header);
+
+      questions.forEach((q, idx) => {
+        const qCard = document.createElement("div");
+        qCard.className = "aac-card question-card";
+        qCard.innerHTML = `
+          <div class="q-emoji">❓</div>
+          <span>${q}</span>
+        `;
+        qCard.onclick = () => {
+          if (isEditMode) return;
+          // Speak the question
+          speakText(q);
+          // Add to sentence strip as a question card
+          const qObj = { id: "q_" + Date.now() + "_" + idx, label: q, icon: "❓", pos: "pos-social" };
+          sentence.push(qObj);
+          updateSentenceBar();
+        };
+        grid.appendChild(qCard);
       });
     }
 
@@ -1005,7 +1250,6 @@
         ? `<img src="${card.image}" class="tile-icon-img" alt="${card.label}" />`
         : `<div class="tile-icon-emoji">${card.icon || "💬"}</div>`;
 
-      // In All Words view, edit/delete buttons are hidden.
       const showActions = isEditMode && activeCategory !== ALL_WORDS_KEY;
 
       cardEl.innerHTML = `
@@ -1065,6 +1309,7 @@
         };
         saveData();
         activeCategory = newKey;
+        showQuestionsInGrid = false;
         closeModal("addCategoryOverlay");
         document.getElementById("catNameInput").value = "";
         renderTabs();
@@ -1083,6 +1328,7 @@
         activeCategory = keys.length > 0 ? keys[0] : null;
       }
 
+      showQuestionsInGrid = false;
       saveData();
       renderTabs();
       renderGrid();
@@ -1322,10 +1568,79 @@
       updateSentenceBar();
     }
 
+    /* ---------- PLAY SENTENCE WITH CUSTOM VOICES ---------- */
     function playSentence() {
       if (sentence.length === 0) return;
-      const fullText = sentence.map(card => card.label).join(" ");
-      speakText(fullText);
+
+      const anyHaveRecordings = sentence.some(card => audioRecordings[card.id]);
+
+      if (!anyHaveRecordings) {
+        const fullText = sentence.map(card => card.label).join(" ");
+        speakText(fullText);
+        return;
+      }
+
+      const allHaveRecordings = sentence.every(card => audioRecordings[card.id]);
+
+      if (allHaveRecordings) {
+        playSequentially(0, sentence.map(card => ({
+          type: 'custom',
+          src: audioRecordings[card.id],
+          card: card
+        })));
+        return;
+      }
+
+      const playlist = sentence.map(card => {
+        if (audioRecordings[card.id]) {
+          return { type: 'custom', src: audioRecordings[card.id], card: card };
+        } else {
+          return { type: 'tts', text: card.label, card: card };
+        }
+      });
+
+      playSequentially(0, playlist);
+    }
+
+    function playSequentially(index, playlist) {
+      if (index >= playlist.length) return;
+
+      const item = playlist[index];
+      const speed = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
+
+      if (item.type === 'custom') {
+        const audio = new Audio(item.src);
+        audio.playbackRate = speed;
+        audio.onended = () => playSequentially(index + 1, playlist);
+        audio.onerror = () => playSequentially(index + 1, playlist);
+        audio.play().catch(() => playSequentially(index + 1, playlist));
+      } else if (item.type === 'tts') {
+        const text = item.text;
+        const lang = document.getElementById("googleLangSelect").value;
+        const encodedText = encodeURIComponent(text);
+        const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodedText}`;
+        const audio = new Audio(googleTtsUrl);
+        audio.playbackRate = speed;
+        audio.onended = () => playSequentially(index + 1, playlist);
+        audio.onerror = () => {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
+          utterance.rate = speed;
+          utterance.onend = () => playSequentially(index + 1, playlist);
+          utterance.onerror = () => playSequentially(index + 1, playlist);
+          window.speechSynthesis.speak(utterance);
+        };
+        audio.play().catch(() => {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
+          utterance.rate = speed;
+          utterance.onend = () => playSequentially(index + 1, playlist);
+          utterance.onerror = () => playSequentially(index + 1, playlist);
+          window.speechSynthesis.speak(utterance);
+        });
+      }
     }
 
     // Initialize
