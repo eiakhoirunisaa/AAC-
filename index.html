@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universal AAC · Editable Routine Categories</title>
+  <title>Universal AAC · All Words (Fixed Grid)</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400&display=swap');
 
@@ -184,6 +184,17 @@
       color: #2563EB;
     }
 
+    /* Special styling for All Words tab */
+    .tab-btn.all-words-tab {
+      background: #DBEAFE;
+      color: #1D4ED8;
+      font-weight: 500;
+    }
+    .tab-btn.all-words-tab.active {
+      background: #2563EB;
+      color: #FFFFFF;
+    }
+
     .tab-edit-btn {
       position: absolute;
       right: -8px;
@@ -241,10 +252,12 @@
       flex: 1;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+      grid-auto-rows: min-content;
       gap: 16px;
       padding: 24px 20px;
       overflow-y: auto;
       background: #FFFFFF;
+      align-content: start;
     }
 
     /* 3D Tile */
@@ -601,6 +614,20 @@
       border-radius: 8px;
       object-fit: cover;
     }
+
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 60px 20px;
+      color: #94A3B8;
+      font-size: 1rem;
+    }
+
+    .empty-state .big-emoji {
+      font-size: 4rem;
+      display: block;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
@@ -697,10 +724,13 @@
         </div>
       </div>
       <div class="guide-section">
+        <h3>📚 All Words Category</h3>
+        <p>The <b>All Words</b> tab shows every word from all your categories in one clean, uniform grid. No badges, no extra gaps — just all your words ready to tap.</p>
+      </div>
+      <div class="guide-section">
         <h3>Features & Customization</h3>
         <p>• Tap tiles to add to the sentence strip.<br>
-        • Tap <b>Edit</b> at the bottom to enter edit mode.<br>
-        • In edit mode, you can edit/delete words <b>and</b> edit/delete routine categories.<br>
+        • Tap <b>Edit</b> to edit/delete words and categories.<br>
         • Add custom images or emojis to suit your routine.<br>
         • Tiles have a colorful 3D effect — they lift on hover and press down when tapped.</p>
       </div>
@@ -753,6 +783,8 @@
   </div>
 
   <script>
+    const ALL_WORDS_KEY = "__all_words__";
+
     const defaultCategories = {
       morning: {
         name: "🌅 Morning Routine",
@@ -792,7 +824,7 @@
     let activeCategory = Object.keys(categories)[0] || "morning";
     let isEditMode = false;
     let editingTileId = null;
-    let editingCategoryKey = null;   // for editing category
+    let editingCategoryKey = null;
 
     let activeCard = null;
     let sentence = [];
@@ -825,6 +857,18 @@
       localStorage.setItem('aac_recordings', JSON.stringify(audioRecordings));
     }
 
+    /* ---------- ALL WORDS HELPERS ---------- */
+    function getAllWords() {
+      const all = [];
+      Object.keys(categories).forEach(catKey => {
+        const cat = categories[catKey];
+        cat.items.forEach(item => {
+          all.push({ ...item, _catKey: catKey });
+        });
+      });
+      return all;
+    }
+
     /* ---------- EDIT MODE ---------- */
     function toggleEditMode() {
       isEditMode = !isEditMode;
@@ -835,11 +879,27 @@
       renderGrid();
     }
 
-    /* ---------- TABS (with edit/delete) ---------- */
+    /* ---------- TABS ---------- */
     function renderTabs() {
       const tabsNav = document.getElementById("categoryTabs");
       tabsNav.innerHTML = "";
-      
+
+      // Special "All Words" tab first
+      const allWrapper = document.createElement("div");
+      allWrapper.className = "tab-wrapper";
+
+      const allBtn = document.createElement("button");
+      allBtn.className = `tab-btn all-words-tab ${activeCategory === ALL_WORDS_KEY ? 'active' : ''}`;
+      allBtn.innerText = "📚 All Words";
+      allBtn.onclick = () => {
+        activeCategory = ALL_WORDS_KEY;
+        renderTabs();
+        renderGrid();
+      };
+      allWrapper.appendChild(allBtn);
+      tabsNav.appendChild(allWrapper);
+
+      // Regular category tabs
       Object.keys(categories).forEach(catKey => {
         const wrapper = document.createElement("div");
         wrapper.className = "tab-wrapper";
@@ -893,27 +953,16 @@
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
 
+      if (activeCategory === ALL_WORDS_KEY) {
+        renderAllWordsGrid(grid);
+        return;
+      }
+
       const currentCat = categories[activeCategory];
       if (!currentCat) return;
 
       currentCat.items.forEach(card => {
-        const cardEl = document.createElement("div");
-        cardEl.className = `aac-card ${card.pos || 'pos-noun'}`;
-        
-        const visualContent = card.image 
-          ? `<img src="${card.image}" class="tile-icon-img" alt="${card.label}" />`
-          : `<div class="tile-icon-emoji">${card.icon || "💬"}</div>`;
-
-        cardEl.innerHTML = `
-          <button class="tile-action-btn edit-tile-btn" onclick="openEditWordModal(event, '${card.id}')" title="Edit Word">✏️</button>
-          <button class="tile-action-btn delete-btn" onclick="deleteWord(event, '${card.id}')" title="Delete Word">✕</button>
-          ${visualContent}
-          <span>${card.label}</span>
-        `;
-
-        cardEl.onclick = () => {
-          if (!isEditMode) openPopup(card);
-        };
+        const cardEl = buildTileElement(card, false);
         grid.appendChild(cardEl);
       });
 
@@ -929,6 +978,50 @@
       }
     }
 
+    function renderAllWordsGrid(grid) {
+      const allWords = getAllWords();
+
+      if (allWords.length === 0) {
+        const empty = document.createElement("div");
+        empty.className = "empty-state";
+        empty.innerHTML = `<span class="big-emoji">📭</span>No words yet. Add words to your categories first!`;
+        grid.appendChild(empty);
+        return;
+      }
+
+      allWords.forEach(card => {
+        // No badge, no edit/delete actions in All Words view
+        const cardEl = buildTileElement(card, false);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    /* ---------- TILE BUILDER ---------- */
+    function buildTileElement(card, showBadge) {
+      const cardEl = document.createElement("div");
+      cardEl.className = `aac-card ${card.pos || 'pos-noun'}`;
+
+      const visualContent = card.image
+        ? `<img src="${card.image}" class="tile-icon-img" alt="${card.label}" />`
+        : `<div class="tile-icon-emoji">${card.icon || "💬"}</div>`;
+
+      // In All Words view, edit/delete buttons are hidden.
+      const showActions = isEditMode && activeCategory !== ALL_WORDS_KEY;
+
+      cardEl.innerHTML = `
+        ${showActions ? `<button class="tile-action-btn edit-tile-btn" onclick="openEditWordModal(event, '${card.id}')" title="Edit Word">✏️</button>` : ""}
+        ${showActions ? `<button class="tile-action-btn delete-btn" onclick="deleteWord(event, '${card.id}')" title="Delete Word">✕</button>` : ""}
+        ${visualContent}
+        <span>${card.label}</span>
+      `;
+
+      cardEl.onclick = () => {
+        if (!isEditMode) openPopup(card);
+      };
+
+      return cardEl;
+    }
+
     /* ---------- CATEGORY EDITING ---------- */
     function openAddCategoryModal() {
       editingCategoryKey = null;
@@ -941,11 +1034,10 @@
     function openEditCategoryModal(catKey) {
       editingCategoryKey = catKey;
       const cat = categories[catKey];
-      // Parse existing name: "🌅 Morning Routine" -> icon="🌅", name="Morning Routine"
       const parts = cat.name.split(" ");
       const icon = parts[0];
       const name = parts.slice(1).join(" ");
-      
+
       document.querySelector("#addCategoryOverlay h2").innerText = "Edit Routine Category";
       document.getElementById("catIconInput").value = icon;
       document.getElementById("catNameInput").value = name;
@@ -959,7 +1051,6 @@
       if (!name) return alert("Please enter a routine category name.");
 
       if (editingCategoryKey) {
-        // Update existing category
         categories[editingCategoryKey].name = `${icon} ${name}`;
         saveData();
         closeModal("addCategoryOverlay");
@@ -967,7 +1058,6 @@
         renderTabs();
         renderGrid();
       } else {
-        // Create new category
         const newKey = "cat_" + Date.now();
         categories[newKey] = {
           name: `${icon} ${name}`,
@@ -987,8 +1077,7 @@
       if (!confirm(`Delete category "${catName}" and all its words?`)) return;
 
       delete categories[catKey];
-      
-      // If we deleted the active category, switch to first available
+
       if (activeCategory === catKey) {
         const keys = Object.keys(categories);
         activeCategory = keys.length > 0 ? keys[0] : null;
@@ -1014,7 +1103,7 @@
     function openEditWordModal(event, wordId) {
       event.stopPropagation();
       editingTileId = wordId;
-      
+
       const currentCat = categories[activeCategory];
       const card = currentCat.items.find(item => item.id === wordId);
       if (!card) return;
@@ -1027,7 +1116,7 @@
 
       const previewBox = document.getElementById("existingImagePreview");
       const previewImg = document.getElementById("previewImgElement");
-      
+
       if (card.image) {
         previewImg.src = card.image;
         previewBox.style.display = "flex";
@@ -1207,8 +1296,8 @@
       sentence.forEach((card, index) => {
         const cardEl = document.createElement("div");
         cardEl.className = `message-card ${card.pos || 'pos-noun'}`;
-        
-        const visualContent = card.image 
+
+        const visualContent = card.image
           ? `<img src="${card.image}" alt="${card.label}" />`
           : `<div class="msg-emoji">${card.icon || "💬"}</div>`;
 
