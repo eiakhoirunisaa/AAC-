@@ -100,17 +100,13 @@
       color: #059669;
       background: #ECFDF5;
     }
-    .inline-btn.btn-play:active {
-      transform: scale(0.95);
-    }
+    .inline-btn.btn-play:active { transform: scale(0.95); }
 
     .inline-btn.btn-clear {
       color: #DC2626;
       background: #FEF2F2;
     }
-    .inline-btn.btn-clear:active {
-      transform: scale(0.95);
-    }
+    .inline-btn.btn-clear:active { transform: scale(0.95); }
 
     .message-card {
       width: 68px;
@@ -134,9 +130,9 @@
     }
 
     .message-card img {
-      width: 32px;
-      height: 32px;
-      object-fit: cover;
+      max-width: 40px;
+      max-height: 40px;
+      object-fit: contain;
       border-radius: 6px;
       margin-bottom: 2px;
     }
@@ -249,7 +245,6 @@
       color: #475569;
     }
 
-    /* Small Question button (❓) next to category */
     .category-question-btn {
       background: #FEF3C7;
       border: 1px solid #FDE68A;
@@ -273,9 +268,7 @@
       transform: scale(1.08);
     }
 
-    .category-question-btn:active {
-      transform: scale(0.95);
-    }
+    .category-question-btn:active { transform: scale(0.95); }
 
     .category-question-btn.active-q {
       background: #F59E0B;
@@ -283,11 +276,11 @@
       border-color: #D97706;
     }
 
-    /* Square Tile Grid */
+    /* Grid */
     .grid-container {
       flex: 1;
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
       grid-auto-rows: min-content;
       gap: 16px;
       padding: 24px 20px;
@@ -299,8 +292,8 @@
     /* 3D Tile */
     .aac-card {
       border-radius: var(--radius-lg);
-      aspect-ratio: 1 / 1;
       width: 100%;
+      min-height: 140px;
       padding: 10px;
       display: flex;
       flex-direction: column;
@@ -332,12 +325,10 @@
     .pos-social { background-color: var(--pos-social-bg); }
     .pos-routine{ background-color: var(--pos-routine-bg); }
 
-    /* Question tile style (wide card) */
     .aac-card.question-card {
       background-color: var(--question-bg);
       border: 2px solid var(--question-border);
       grid-column: span 2;
-      aspect-ratio: auto;
       min-height: 90px;
       padding: 12px 16px;
       flex-direction: row;
@@ -346,14 +337,8 @@
       transform: translateY(-2px);
     }
 
-    .aac-card.question-card:hover {
-      transform: translateY(-6px);
-      filter: brightness(1.02);
-    }
-
-    .aac-card.question-card:active {
-      transform: translateY(2px);
-    }
+    .aac-card.question-card:hover { transform: translateY(-6px); filter: brightness(1.02); }
+    .aac-card.question-card:active { transform: translateY(2px); }
 
     .aac-card.question-card .q-emoji {
       font-size: 1.8rem;
@@ -401,46 +386,13 @@
     .aac-card.add-card-btn {
       background: #F8FAFC;
       border: 1px dashed #CBD5E1;
-      box-shadow:
-        -5px 0 10px rgba(0, 0, 0, 0.04),
-        5px 0 10px rgba(0, 0, 0, 0.04),
-        0 -3px 6px rgba(0, 0, 0, 0.02),
-        0 7px 0 rgba(0, 0, 0, 0.04),
-        0 5px 16px rgba(0, 0, 0, 0.04),
-        inset 0 1px 4px rgba(255, 255, 255, 1),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.02),
-        inset 1px 0 2px rgba(255, 255, 255, 0.8),
-        inset -1px 0 2px rgba(0, 0, 0, 0.02);
+      min-height: 140px;
       transform: translateY(-2px);
     }
 
-    .aac-card.add-card-btn:hover {
-      transform: translateY(-6px);
-      box-shadow:
-        -7px 0 14px rgba(0, 0, 0, 0.05),
-        7px 0 14px rgba(0, 0, 0, 0.05),
-        0 -4px 10px rgba(0, 0, 0, 0.03),
-        0 10px 0 rgba(0, 0, 0, 0.04),
-        0 10px 26px rgba(0, 0, 0, 0.06),
-        inset 0 1px 4px rgba(255, 255, 255, 1),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.02),
-        inset 1px 0 2px rgba(255, 255, 255, 0.8),
-        inset -1px 0 2px rgba(0, 0, 0, 0.02);
-    }
+    .aac-card.add-card-btn:hover { transform: translateY(-6px); }
 
-    .aac-card.add-card-btn:active {
-      transform: translateY(2px);
-      box-shadow:
-        -2px 0 5px rgba(0, 0, 0, 0.03),
-        2px 0 5px rgba(0, 0, 0, 0.03),
-        0 -1px 4px rgba(0, 0, 0, 0.01),
-        0 2px 0 rgba(0, 0, 0, 0.04),
-        0 4px 12px rgba(0, 0, 0, 0.04),
-        inset 0 1px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 5px rgba(0, 0, 0, 0.04),
-        inset 1px 0 2px rgba(255, 255, 255, 0.6),
-        inset -1px 0 2px rgba(0, 0, 0, 0.03);
-    }
+    .aac-card.add-card-btn:active { transform: translateY(2px); }
 
     /* Tile Action Badges */
     .tile-action-btn {
@@ -465,13 +417,13 @@
     .edit-active .tile-action-btn { display: flex; }
 
     .tile-icon-img {
-      width: 64px;
-      height: 64px;
-      object-fit: cover;
-      border-radius: 10px;
+      max-width: 100%;
+      max-height: 180px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       margin-bottom: 6px;
-      background: #FFFFFF;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border-radius: 10px;
     }
 
     .tile-icon-emoji {
@@ -574,19 +526,33 @@
       border-radius: 24px;
       padding: 24px;
       width: 90%;
-      max-width: 440px;
+      max-width: 640px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       transform: scale(0.9);
       transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      max-height: 85vh;
+      max-height: 90vh;
       overflow-y: auto;
     }
 
     .overlay.active .modal { transform: scale(1); }
 
-    .modal-graphic { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-    .modal-graphic img { width: 140px; height: 140px; object-fit: cover; border-radius: 16px; }
+    .modal-graphic {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-graphic img {
+      max-width: 100%;
+      max-height: 60vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
     .modal-graphic .emoji-large { font-size: 5rem; }
 
     .modal-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--text-main); }
@@ -682,10 +648,12 @@
     }
 
     .image-preview-box img {
-      width: 48px;
-      height: 48px;
+      max-width: 120px;
+      max-height: 120px;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       border-radius: 8px;
-      object-fit: cover;
     }
 
     .empty-state {
@@ -702,7 +670,6 @@
       margin-bottom: 12px;
     }
 
-    /* Question header in grid with language toggle */
     .question-header {
       grid-column: 1 / -1;
       display: flex;
@@ -832,8 +799,8 @@
     <div class="modal">
       <h2 style="margin-bottom: 16px;">User Guide 💡</h2>
       <div class="guide-section">
-        <h3>🎨 Color Code System</h3>
-        <p>Tiles use soft pastel background colors for easy category recognition:</p>
+        <h3>🎨 Auto Grouping by Part of Speech</h3>
+        <p>Words are automatically sorted by part of speech — Nouns first, then Verbs, Adjectives, Social, then Routine. Groups flow seamlessly across rows with no gaps. The tile color tells you the group:</p>
         <div class="color-legend-grid">
           <div class="legend-item pos-noun">🟧 Orange: Noun</div>
           <div class="legend-item pos-verb">🟩 Green: Verb</div>
@@ -844,7 +811,7 @@
       </div>
       <div class="guide-section">
         <h3>🖼️ Local Image Assets</h3>
-        <p>All word tiles load images from the <b>assets/</b> folder (e.g. <code>assets/eat.jpg</code>). Place your image files inside that folder with the exact filenames listed in the code.</p>
+        <p>All word tiles load images from the <b>assets/</b> folder. Transparent PNGs blend seamlessly with the tile's pastel color.</p>
       </div>
       <div class="guide-section">
         <h3>❓ Question Button & Language Toggle</h3>
@@ -885,7 +852,7 @@
           <button type="button" style="background:#EF4444; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;" onclick="removeTileImage()">Remove Photo</button>
         </div>
         <label style="margin-top: 8px;">Option 2: Local Asset Path</label>
-        <input type="text" id="wordAssetPathInput" placeholder="assets/my-image.jpg">
+        <input type="text" id="wordAssetPathInput" placeholder="assets/my-image.png">
         <label style="margin-top: 8px;">Option 3: Emoji (fallback)</label>
         <input type="text" id="wordIconInput" placeholder="e.g. 🖌️" maxlength="2">
         <label>Word / Phrase Label:</label>
@@ -908,23 +875,34 @@
     const ALL_WORDS_KEY = "__all_words__";
     const ASSETS_FOLDER = "assets/";
 
-    // Default categories — each item points to a LOCAL image file inside the assets/ folder.
-    // Filename convention: assets/<id>.jpg (or .png). Example: assets/eat.jpg
-    // The icon (emoji) is used only as a fallback if the image fails to load.
+    // POS order — groups are laid out one after another with NO header rows
+    // in between so the grid stays perfectly filled.
+    const POS_ORDER = ["pos-noun", "pos-verb", "pos-adj", "pos-social", "pos-routine"];
+
     const defaultCategories = {
       mealtime: {
         name: "🍽️ Mealtime",
         items: [
-          { id: "eat",       label: "Eat",      icon: "🍽️", pos: "pos-verb",  image: ASSETS_FOLDER + "eat.jpg" },
-          { id: "drink",     label: "Drink",    icon: "🥤", pos: "pos-verb",  image: ASSETS_FOLDER + "drink.jpg" },
-          { id: "more_food", label: "More",     icon: "➕", pos: "pos-verb",  image: ASSETS_FOLDER + "more_food.jpg" },
-          { id: "all_done",  label: "All Done", icon: "✅", pos: "pos-verb",  image: ASSETS_FOLDER + "all_done.jpg" },
-          { id: "yummy",     label: "Yummy",    icon: "😋", pos: "pos-adj",   image: ASSETS_FOLDER + "yummy.jpg" },
-          { id: "hot",       label: "Hot",      icon: "🔥", pos: "pos-adj",   image: ASSETS_FOLDER + "hot.jpg" },
-          { id: "yes",       label: "Yes",      icon: "✅", pos: "pos-adj",   image: ASSETS_FOLDER + "yes.png" },
-          { id: "no",        label: "No",       icon: "❌", pos: "pos-adj",   image: ASSETS_FOLDER + "no.png" }
+          { id: "i",        label: "I",        icon: "🙋", pos: "pos-social", image: ASSETS_FOLDER + "i.png" },
+          { id: "want",     label: "Want",     icon: "👉", pos: "pos-verb",   image: ASSETS_FOLDER + "want.png" },
+          { id: "eat",      label: "Eat",      icon: "🍽️", pos: "pos-verb",   image: ASSETS_FOLDER + "eat.png" },
+          { id: "drink",    label: "Drink",    icon: "🥤", pos: "pos-verb",   image: ASSETS_FOLDER + "drink.png" },
+          { id: "hungry",   label: "Hungry",   icon: "🍎", pos: "pos-adj",    image: ASSETS_FOLDER + "hungry.png" },
+          { id: "thirsty",  label: "Thirsty",  icon: "💧", pos: "pos-adj",    image: ASSETS_FOLDER + "thirsty.png" },
+          { id: "more",     label: "More",     icon: "➕", pos: "pos-verb",   image: ASSETS_FOLDER + "more.png" },
+          { id: "enough",   label: "Enough",   icon: "✅", pos: "pos-verb",   image: ASSETS_FOLDER + "enough.png" },
+          { id: "rice",     label: "Rice",     icon: "🍚", pos: "pos-noun",   image: ASSETS_FOLDER + "rice.png" },
+          { id: "noodle",   label: "Mee",      icon: "🍝", pos: "pos-noun",   image: ASSETS_FOLDER + "mee.png" },
+          { id: "chicken",  label: "Chicken",  icon: "🍗", pos: "pos-noun",   image: ASSETS_FOLDER + "chicken.png" },
+          { id: "fish",     label: "Fish",     icon: "🐟", pos: "pos-noun",   image: ASSETS_FOLDER + "fish.png" },
+          { id: "water",    label: "Water",    icon: "💧", pos: "pos-noun",   image: ASSETS_FOLDER + "water.png" },
+          { id: "milk",     label: "Milk",     icon: "🍼", pos: "pos-noun",   image: ASSETS_FOLDER + "milk.png" },
+          { id: "hot",      label: "Hot",      icon: "🔥", pos: "pos-adj",    image: ASSETS_FOLDER + "hot.png" },
+          { id: "cold",     label: "Cold",     icon: "❄️", pos: "pos-adj",    image: ASSETS_FOLDER + "cold.png" },
+          { id: "finish",   label: "Finish",   icon: "🏁", pos: "pos-verb",   image: ASSETS_FOLDER + "finish.png" }
         ],
         questions: [
+          { en: "Are you hungry / thirsty?", bm: "Kamu lapar / haus?" },
           { en: "Do you want more?", bm: "Kamu mahu makan lagi?" },
           { en: "What do you want to eat?", bm: "Kamu mahu makan apa?" },
           { en: "What do you like to eat?", bm: "Kamu suka makan apa?" },
@@ -935,12 +913,12 @@
       bathtime: {
         name: "🛁 Bath Time",
         items: [
-          { id: "bath",       label: "Bath",       icon: "🛁", pos: "pos-noun", image: ASSETS_FOLDER + "bath.jpg" },
-          { id: "shampoo",    label: "Shampoo",    icon: "🧴", pos: "pos-noun", image: ASSETS_FOLDER + "shampoo.jpg" },
-          { id: "towel",      label: "Towel",      icon: "🧻", pos: "pos-noun", image: ASSETS_FOLDER + "towel.jpg" },
-          { id: "toothbrush", label: "Toothbrush", icon: "🪥", pos: "pos-noun", image: ASSETS_FOLDER + "toothbrush.jpg" },
-          { id: "toothpaste", label: "Toothpaste", icon: "🦷", pos: "pos-noun", image: ASSETS_FOLDER + "toothpaste.jpg" },
-          { id: "water_bath", label: "Water",      icon: "💧", pos: "pos-noun", image: ASSETS_FOLDER + "water.jpg" }
+          { id: "bath",       label: "Bath",       icon: "🛁", pos: "pos-noun", image: ASSETS_FOLDER + "bath.png" },
+          { id: "shampoo",    label: "Shampoo",    icon: "🧴", pos: "pos-noun", image: ASSETS_FOLDER + "shampoo.png" },
+          { id: "towel",      label: "Towel",      icon: "🧻", pos: "pos-noun", image: ASSETS_FOLDER + "towel.png" },
+          { id: "toothbrush", label: "Toothbrush", icon: "🪥", pos: "pos-noun", image: ASSETS_FOLDER + "toothbrush.png" },
+          { id: "toothpaste", label: "Toothpaste", icon: "🦷", pos: "pos-noun", image: ASSETS_FOLDER + "toothpaste.png" },
+          { id: "water_bath", label: "Water",      icon: "💧", pos: "pos-noun", image: ASSETS_FOLDER + "water.png" }
         ],
         questions: [
           { en: "Do you want to take bath?", bm: "Kamu mahu mandi?" },
@@ -956,12 +934,12 @@
       sleeptime: {
         name: "😴 Sleep Time",
         items: [
-          { id: "sleepy",    label: "Sleepy",    icon: "😴", pos: "pos-adj",   image: ASSETS_FOLDER + "sleepy.jpg" },
-          { id: "light_off", label: "Light Off", icon: "💡", pos: "pos-verb",  image: ASSETS_FOLDER + "light_off.jpg" },
-          { id: "pillow",    label: "Pillow",    icon: "🛏️", pos: "pos-noun", image: ASSETS_FOLDER + "pillow.jpg" },
-          { id: "blanket",   label: "Blanket",   icon: "🧣", pos: "pos-noun",  image: ASSETS_FOLDER + "blanket.jpg" },
-          { id: "doll",      label: "Doll",      icon: "🧸", pos: "pos-noun",  image: ASSETS_FOLDER + "doll.jpg" },
-          { id: "pee",       label: "Pee",       icon: "🚽", pos: "pos-verb",  image: ASSETS_FOLDER + "pee.jpg" }
+          { id: "sleepy",    label: "Sleepy",    icon: "😴", pos: "pos-adj",   image: ASSETS_FOLDER + "sleepy.png" },
+          { id: "light_off", label: "Light Off", icon: "💡", pos: "pos-verb",  image: ASSETS_FOLDER + "light_off.png" },
+          { id: "pillow",    label: "Pillow",    icon: "🛏️", pos: "pos-noun", image: ASSETS_FOLDER + "pillow.png" },
+          { id: "blanket",   label: "Blanket",   icon: "🧣", pos: "pos-noun",  image: ASSETS_FOLDER + "blanket.png" },
+          { id: "doll",      label: "Doll",      icon: "🧸", pos: "pos-noun",  image: ASSETS_FOLDER + "doll.png" },
+          { id: "pee",       label: "Pee",       icon: "🚽", pos: "pos-verb",  image: ASSETS_FOLDER + "pee.png" }
         ],
         questions: [
           { en: "Are you sleepy?", bm: "Adakah kamu mengantuk?" },
@@ -974,10 +952,12 @@
     };
 
     /* ----------------------------------------------------------------
-       LOAD + MERGE STRATEGY
-       - Keeps user data (custom photos, custom words, recordings)
+       LOAD + MERGE + CLEANUP STRATEGY
+       - Keeps user-added words (ids starting with "word_") and recordings
        - Removes categories no longer in defaults
-       - Auto-attaches default local asset paths to old emoji-only tiles
+       - Removes stale default items whose id no longer exists in defaults
+       - Attaches default local asset paths to items missing them
+       - Upgrades old string-array questions to bilingual objects
     ---------------------------------------------------------------- */
     let categories = {};
     try {
@@ -986,7 +966,7 @@
       categories = {};
     }
 
-    // Remove categories no longer in defaults
+    // Remove categories that are no longer in defaults
     Object.keys(categories).forEach(key => {
       if (!defaultCategories[key]) {
         delete categories[key];
@@ -1001,9 +981,10 @@
         if (!Array.isArray(categories[key].items)) {
           categories[key].items = [];
         }
-        // Attach default local asset paths to items that are missing them
-        // (only if the user hasn't already set a custom image)
+
         const defaultItems = defaultCategories[key].items;
+
+        // 1) Attach default images to items that are missing them
         categories[key].items = categories[key].items.map(item => {
           const match = defaultItems.find(d => d.id === item.id);
           if (match && !item.image && !item.customImage) {
@@ -1011,13 +992,23 @@
           }
           return item;
         });
-        // Make sure any brand-new default items appear
+
+        // 2) Ensure every default item exists
         defaultItems.forEach(dItem => {
           if (!categories[key].items.find(i => i.id === dItem.id)) {
             categories[key].items.push(JSON.parse(JSON.stringify(dItem)));
           }
         });
-        // Upgrade old string-array questions to bilingual objects
+
+        // 3) *** CLEANUP *** — remove stale default items that no longer exist
+        //    in defaultCategories. Keep user-created items (id starts with "word_").
+        const defaultIds = new Set(defaultItems.map(d => d.id));
+        categories[key].items = categories[key].items.filter(item => {
+          if (typeof item.id === 'string' && item.id.startsWith('word_')) return true;
+          return defaultIds.has(item.id);
+        });
+
+        // 4) Upgrade old string-array questions to bilingual objects
         if (defaultCategories[key].questions) {
           const saved = categories[key].questions;
           if (!saved || (saved.length > 0 && typeof saved[0] === 'string')) {
@@ -1031,6 +1022,7 @@
       categories = JSON.parse(JSON.stringify(defaultCategories));
     }
 
+    // Persist the cleaned-up result so subsequent loads are stable
     localStorage.setItem('aac_categories', JSON.stringify(categories));
 
     let activeCategory = Object.keys(categories)[0] || "mealtime";
@@ -1072,7 +1064,6 @@
       localStorage.setItem('aac_recordings', JSON.stringify(audioRecordings));
     }
 
-    /* ---------- ALL WORDS HELPERS ---------- */
     function getAllWords() {
       const all = [];
       Object.keys(categories).forEach(catKey => {
@@ -1082,6 +1073,21 @@
         });
       });
       return all;
+    }
+
+    /* ---------- GROUPING ---------- */
+    function sortByPos(items) {
+      const buckets = {};
+      POS_ORDER.forEach(pos => buckets[pos] = []);
+      items.forEach(item => {
+        const pos = POS_ORDER.includes(item.pos) ? item.pos : "pos-noun";
+        buckets[pos].push(item);
+      });
+      const result = [];
+      POS_ORDER.forEach(pos => {
+        buckets[pos].forEach(item => result.push(item));
+      });
+      return result;
     }
 
     /* ---------- EDIT MODE ---------- */
@@ -1195,7 +1201,9 @@
       const currentCat = categories[activeCategory];
       if (!currentCat) return;
 
-      currentCat.items.forEach(card => {
+      const sorted = sortByPos(currentCat.items);
+
+      sorted.forEach(card => {
         const cardEl = buildTileElement(card);
         grid.appendChild(cardEl);
       });
@@ -1227,7 +1235,8 @@
         return;
       }
 
-      allWords.forEach(card => {
+      const sorted = sortByPos(allWords);
+      sorted.forEach(card => {
         const cardEl = buildTileElement(card);
         grid.appendChild(cardEl);
       });
@@ -1309,7 +1318,6 @@
 
       const showActions = isEditMode && activeCategory !== ALL_WORDS_KEY;
 
-      // Priority: user-uploaded customImage > image path (local asset or URL) > emoji
       const imgSrc = card.customImage || card.image;
       let visualContent;
       if (imgSrc) {
@@ -1405,13 +1413,13 @@
     }
 
     /* ---------- WORD EDITING ---------- */
-    function openAddWordModal() {
+    function openAddWordModal(preselectedPos) {
       editingTileId = null;
       document.getElementById("wordModalTitle").innerText = "Add New Word Tile";
       document.getElementById("wordIconInput").value = "";
       document.getElementById("wordLabelInput").value = "";
       document.getElementById("wordAssetPathInput").value = "";
-      document.getElementById("wordPosInput").value = "pos-noun";
+      document.getElementById("wordPosInput").value = preselectedPos || "pos-noun";
       document.getElementById("wordPhotoInput").value = "";
       document.getElementById("existingImagePreview").style.display = "none";
       openModal("addWordOverlay");
@@ -1471,27 +1479,15 @@
       const file = photoInput.files[0];
 
       if (file) {
-        // Uploaded photo takes priority — stored as base64 customImage
         const reader = new FileReader();
         reader.onload = function (e) {
-          const img = new Image();
-          img.src = e.target.result;
-          img.onload = function () {
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            canvas.width = 200;
-            canvas.height = 200;
-            ctx.drawImage(img, 0, 0, 200, 200);
-            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
-            commitWordChanges(label, icon, pos, compressedBase64, null);
-          };
+          const base64 = e.target.result;
+          commitWordChanges(label, icon, pos, base64, null);
         };
         reader.readAsDataURL(file);
       } else if (assetPath) {
-        // Local asset path provided
         commitWordChanges(label, icon, pos, null, assetPath);
       } else {
-        // No new image
         const currentCat = categories[activeCategory];
         let existingImg = null;
         let existingCustom = null;
@@ -1676,7 +1672,6 @@
       updateSentenceBar();
     }
 
-    /* ---------- PLAY SENTENCE WITH CUSTOM VOICES ---------- */
     function playSentence() {
       if (sentence.length === 0) return;
 
