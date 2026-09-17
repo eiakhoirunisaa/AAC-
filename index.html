@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universal AAC · All Words + Questions</title>
+  <title>Universal AAC · Mealtime · Bath · Sleep</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400&display=swap');
 
@@ -187,7 +187,6 @@
       color: #2563EB;
     }
 
-    /* Special styling for All Words tab */
     .tab-btn.all-words-tab {
       background: #DBEAFE;
       color: #1D4ED8;
@@ -466,11 +465,13 @@
     .edit-active .tile-action-btn { display: flex; }
 
     .tile-icon-img {
-      width: 52px;
-      height: 52px;
+      width: 64px;
+      height: 64px;
       object-fit: cover;
       border-radius: 10px;
       margin-bottom: 6px;
+      background: #FFFFFF;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
 
     .tile-icon-emoji {
@@ -585,7 +586,7 @@
     .overlay.active .modal { transform: scale(1); }
 
     .modal-graphic { display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
-    .modal-graphic img { width: 120px; height: 120px; object-fit: cover; border-radius: 16px; }
+    .modal-graphic img { width: 140px; height: 140px; object-fit: cover; border-radius: 16px; }
     .modal-graphic .emoji-large { font-size: 5rem; }
 
     .modal-title { font-size: 1.8rem; margin-bottom: 20px; color: var(--text-main); }
@@ -701,13 +702,50 @@
       margin-bottom: 12px;
     }
 
-    /* Question header in grid */
+    /* Question header in grid with language toggle */
     .question-header {
       grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 10px 0 4px 0;
-      text-align: left;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .question-header-label {
       font-size: 0.9rem;
       color: #92400E;
+    }
+
+    .question-lang-toggle {
+      display: inline-flex;
+      background: #FDE68A;
+      border-radius: 10px;
+      padding: 3px;
+      border: 1px solid #F59E0B;
+    }
+
+    .question-lang-toggle button {
+      border: none;
+      background: transparent;
+      color: #92400E;
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-weight: 500;
+    }
+
+    .question-lang-toggle button.active {
+      background: #F59E0B;
+      color: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+
+    .question-lang-toggle button:hover:not(.active) {
+      background: rgba(245, 158, 11, 0.2);
     }
   </style>
 </head>
@@ -805,23 +843,16 @@
         </div>
       </div>
       <div class="guide-section">
-        <h3>📚 All Words Category</h3>
-        <p>The <b>All Words</b> tab shows every word from all your categories in one clean, uniform grid. No badges, no extra gaps — just all your words ready to tap.</p>
+        <h3>🖼️ Local Image Assets</h3>
+        <p>All word tiles load images from the <b>assets/</b> folder (e.g. <code>assets/eat.jpg</code>). Place your image files inside that folder with the exact filenames listed in the code.</p>
       </div>
       <div class="guide-section">
-        <h3>❓ Question Button</h3>
-        <p>Tap the small <b>❓</b> button next to a category name to show its question list <b>inside the grid area</b>. Tap any question to speak it and add it to your sentence strip. Tap the ❓ button again to hide the questions.</p>
+        <h3>❓ Question Button & Language Toggle</h3>
+        <p>Tap the small <b>❓</b> button next to a category name to show its question list. Use the <b>EN / BM</b> toggle in the question header to switch languages.</p>
       </div>
       <div class="guide-section">
         <h3>🎙️ Custom Voice</h3>
         <p>Record your own voice for any tile. When you play a sentence, the app will use your recorded voice for those tiles automatically.</p>
-      </div>
-      <div class="guide-section">
-        <h3>Features & Customization</h3>
-        <p>• Tap tiles to add to the sentence strip.<br>
-        • Tap <b>Edit</b> to edit/delete words and categories.<br>
-        • Add custom images or emojis to suit your routine.<br>
-        • Tiles have a colorful 3D effect — they lift on hover and press down when tapped.</p>
       </div>
       <button class="btn-speak" onclick="closeModal('infoCornerOverlay')">Got It!</button>
     </div>
@@ -847,13 +878,15 @@
     <div class="modal">
       <h2 style="margin-bottom: 16px;" id="wordModalTitle">Add New Word Tile</h2>
       <div class="input-group">
-        <label>Option 1: Upload Photo</label>
+        <label>Option 1: Upload Photo (stored in localStorage)</label>
         <input type="file" id="wordPhotoInput" accept="image/*">
         <div class="image-preview-box" id="existingImagePreview" style="display: none;">
           <img id="previewImgElement" src="" alt="Current image">
           <button type="button" style="background:#EF4444; color:white; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;" onclick="removeTileImage()">Remove Photo</button>
         </div>
-        <label style="margin-top: 8px;">Option 2: Use Emoji</label>
+        <label style="margin-top: 8px;">Option 2: Local Asset Path</label>
+        <input type="text" id="wordAssetPathInput" placeholder="assets/my-image.jpg">
+        <label style="margin-top: 8px;">Option 3: Emoji (fallback)</label>
         <input type="text" id="wordIconInput" placeholder="e.g. 🖌️" maxlength="2">
         <label>Word / Phrase Label:</label>
         <input type="text" id="wordLabelInput" placeholder="e.g. Paint Brush">
@@ -873,107 +906,78 @@
 
   <script>
     const ALL_WORDS_KEY = "__all_words__";
+    const ASSETS_FOLDER = "assets/";
 
-    // Default categories with optional question sets
+    // Default categories — each item points to a LOCAL image file inside the assets/ folder.
+    // Filename convention: assets/<id>.jpg (or .png). Example: assets/eat.jpg
+    // The icon (emoji) is used only as a fallback if the image fails to load.
     const defaultCategories = {
-      // morning: {
-      //   name: "🌅 Morning Routine",
-      //   items: [
-      //     { id: "wake", label: "Wake Up", icon: "⏰", pos: "pos-verb" },
-      //     { id: "toilet", label: "Toilet", icon: "🚽", pos: "pos-noun" },
-      //     { id: "brush_teeth", label: "Brush Teeth", icon: "🪥", pos: "pos-verb" },
-      //     { id: "wash_face", label: "Wash Face", icon: "🧼", pos: "pos-verb" },
-      //     { id: "get_dressed", label: "Get Dressed", icon: "👕", pos: "pos-routine" },
-      //     { id: "eat_breakfast", label: "Breakfast", icon: "🥣", pos: "pos-noun" }
-      //   ]
-      // },
-      // needs: {
-      //   name: "🍎 Needs & Wants",
-      //   items: [
-      //     { id: "want", label: "I Want", icon: "👉", pos: "pos-social" },
-      //     { id: "water", label: "Water", icon: "💧", pos: "pos-noun" },
-      //     { id: "hungry", label: "Hungry", icon: "🍎", pos: "pos-adj" },
-      //     { id: "help", label: "Help", icon: "🙋", pos: "pos-social" },
-      //     { id: "more", label: "More", icon: "➕", pos: "pos-verb" },
-      //     { id: "stop", label: "Stop", icon: "🛑", pos: "pos-verb" }
-      //   ]
-      // },
-      // feelings: {
-      //   name: "😊 Feelings",
-      //   items: [
-      //     { id: "feel", label: "I Feel", icon: "💭", pos: "pos-social" },
-      //     { id: "happy", label: "Happy", icon: "😊", pos: "pos-adj" },
-      //     { id: "sad", label: "Sad", icon: "😢", pos: "pos-adj" },
-      //     { id: "tired", label: "Tired", icon: "😴", pos: "pos-adj" },
-      //     { id: "hurt", label: "Hurt", icon: "🩹", pos: "pos-adj" }
-      //   ]
-      // },
       mealtime: {
         name: "🍽️ Mealtime",
         items: [
-          { id: "eat", label: "Eat", icon: "🍽️", pos: "pos-verb" },
-          { id: "drink", label: "Drink", icon: "🥤", pos: "pos-verb" },
-          { id: "more_food", label: "More", icon: "➕", pos: "pos-verb" },
-          { id: "all_done", label: "All Done", icon: "✅", pos: "pos-verb" },
-          { id: "yummy", label: "Yummy", icon: "😋", pos: "pos-adj" },
-          { id: "hot", label: "Hot", icon: "🔥", pos: "pos-adj" }
+          { id: "eat",       label: "Eat",      icon: "🍽️", pos: "pos-verb",  image: ASSETS_FOLDER + "eat.jpg" },
+          { id: "drink",     label: "Drink",    icon: "🥤", pos: "pos-verb",  image: ASSETS_FOLDER + "drink.jpg" },
+          { id: "more_food", label: "More",     icon: "➕", pos: "pos-verb",  image: ASSETS_FOLDER + "more_food.jpg" },
+          { id: "all_done",  label: "All Done", icon: "✅", pos: "pos-verb",  image: ASSETS_FOLDER + "all_done.jpg" },
+          { id: "yummy",     label: "Yummy",    icon: "😋", pos: "pos-adj",   image: ASSETS_FOLDER + "yummy.jpg" },
+          { id: "hot",       label: "Hot",      icon: "🔥", pos: "pos-adj",   image: ASSETS_FOLDER + "hot.jpg" },
+          { id: "yes",       label: "Yes",      icon: "✅", pos: "pos-adj",   image: ASSETS_FOLDER + "yes.png" },
+          { id: "no",        label: "No",       icon: "❌", pos: "pos-adj",   image: ASSETS_FOLDER + "no.png" }
         ],
         questions: [
-          "Do you want more?",
-          "What do you want to eat?",
-          "What do you like to eat?",
-          "The food or drink is hot or cold?",
-          "The food or drink is yummy or not yummy?"
+          { en: "Do you want more?", bm: "Kamu mahu makan lagi?" },
+          { en: "What do you want to eat?", bm: "Kamu mahu makan apa?" },
+          { en: "What do you like to eat?", bm: "Kamu suka makan apa?" },
+          { en: "The food or drink is hot or cold?", bm: "Makanan / Minuman itu panas atau sejuk?" },
+          { en: "The food or drink is yummy or not yummy?", bm: "Makanan / Minuman itu sedap atau tidak sedap?" }
         ]
       },
       bathtime: {
         name: "🛁 Bath Time",
         items: [
-          { id: "bath", label: "Bath", icon: "🛁", pos: "pos-noun" },
-          { id: "shampoo", label: "Shampoo", icon: "🧴", pos: "pos-noun" },
-          { id: "towel", label: "Towel", icon: "🧻", pos: "pos-noun" },
-          { id: "toothbrush", label: "Toothbrush", icon: "🪥", pos: "pos-noun" },
-          { id: "toothpaste", label: "Toothpaste", icon: "🦷", pos: "pos-noun" },
-          { id: "water_bath", label: "Water", icon: "💧", pos: "pos-noun" }
+          { id: "bath",       label: "Bath",       icon: "🛁", pos: "pos-noun", image: ASSETS_FOLDER + "bath.jpg" },
+          { id: "shampoo",    label: "Shampoo",    icon: "🧴", pos: "pos-noun", image: ASSETS_FOLDER + "shampoo.jpg" },
+          { id: "towel",      label: "Towel",      icon: "🧻", pos: "pos-noun", image: ASSETS_FOLDER + "towel.jpg" },
+          { id: "toothbrush", label: "Toothbrush", icon: "🪥", pos: "pos-noun", image: ASSETS_FOLDER + "toothbrush.jpg" },
+          { id: "toothpaste", label: "Toothpaste", icon: "🦷", pos: "pos-noun", image: ASSETS_FOLDER + "toothpaste.jpg" },
+          { id: "water_bath", label: "Water",      icon: "💧", pos: "pos-noun", image: ASSETS_FOLDER + "water.jpg" }
         ],
         questions: [
-          "Do you want to take bath?",
-          "Do you want who to bath you?",
-          "What is this (shampoo / towel / toothbrush / toothpaste)?",
-          "Is the water hot or cold?",
-          "Which one do you want to wear first (shirt / pant / skirt)?",
-          "Do you like wearing (shirt / pant / skirt)?",
-          "Do you want to wear this (shirt / pant / skirt)?",
-          "What colour is this (shirt / pant / skirt)?"
+          { en: "Do you want to take bath?", bm: "Kamu mahu mandi?" },
+          { en: "Do you want who to bath you?", bm: "Siapa yang kamu mahu memandikan kamu?" },
+          { en: "What is this (shampoo / towel / toothbrush / toothpaste)?", bm: "Apa ini (sabun / tuala / berus gigi / ubat gigi)?" },
+          { en: "Is the water hot or cold?", bm: "Air itu panas atau sejuk?" },
+          { en: "Which one do you want to wear first (shirt / pant / skirt)?", bm: "Yang mana satu kamu mahu pakai dahulu (baju / seluar / skirt)?" },
+          { en: "Do you like wearing (shirt / pant / skirt)?", bm: "Adakah anda suka memakai (kemeja / seluar / skirt)?" },
+          { en: "Do you want to wear this (shirt / pant / skirt)?", bm: "Adakah anda mahu memakai (baju / seluar / skirt) ini?" },
+          { en: "What colour is this (shirt / pant / skirt)?", bm: "Apakah warna (baju / seluar / skirt) ini?" }
         ]
       },
       sleeptime: {
         name: "😴 Sleep Time",
         items: [
-          { id: "sleepy", label: "Sleepy", icon: "😴", pos: "pos-adj" },
-          { id: "light_off", label: "Light Off", icon: "💡", pos: "pos-verb" },
-          { id: "pillow", label: "Pillow", icon: "🛏️", pos: "pos-noun" },
-          { id: "blanket", label: "Blanket", icon: "🧣", pos: "pos-noun" },
-          { id: "doll", label: "Doll", icon: "🧸", pos: "pos-noun" },
-          { id: "pee", label: "Pee", icon: "🚽", pos: "pos-verb" }
+          { id: "sleepy",    label: "Sleepy",    icon: "😴", pos: "pos-adj",   image: ASSETS_FOLDER + "sleepy.jpg" },
+          { id: "light_off", label: "Light Off", icon: "💡", pos: "pos-verb",  image: ASSETS_FOLDER + "light_off.jpg" },
+          { id: "pillow",    label: "Pillow",    icon: "🛏️", pos: "pos-noun", image: ASSETS_FOLDER + "pillow.jpg" },
+          { id: "blanket",   label: "Blanket",   icon: "🧣", pos: "pos-noun",  image: ASSETS_FOLDER + "blanket.jpg" },
+          { id: "doll",      label: "Doll",      icon: "🧸", pos: "pos-noun",  image: ASSETS_FOLDER + "doll.jpg" },
+          { id: "pee",       label: "Pee",       icon: "🚽", pos: "pos-verb",  image: ASSETS_FOLDER + "pee.jpg" }
         ],
         questions: [
-          "Are you sleepy?",
-          "Do you want to switch off the light?",
-          "Who do you want to sleep with?",
-          "Do you want to pee before sleep?",
-          "What do you want to bring with you to sleep (pillow / doll / blanket)?"
+          { en: "Are you sleepy?", bm: "Adakah kamu mengantuk?" },
+          { en: "Do you want to switch off the light?", bm: "Adakah kamu mahu tutup lampu?" },
+          { en: "Who do you want to sleep with?", bm: "Dengan siapa anda mahu tidur?" },
+          { en: "Do you want to pee before sleep?", bm: "Adakah anda mahu kencing sebelum tidur?" },
+          { en: "What do you want to bring with you to sleep (pillow / doll / blanket)?", bm: "Apakah yang anda ingin bawa bersama untuk tidur (bantal / anak patung / selimut)?" }
         ]
       }
     };
 
     /* ----------------------------------------------------------------
        LOAD + MERGE STRATEGY
-       ----------------------------------------------------------------
-       This makes sure that if the user already has saved data from an
-       earlier version of the app (without Mealtime / Bath Time / Sleep
-       Time), those new categories + their question lists are ADDED
-       automatically. Existing user data is preserved.
+       - Keeps user data (custom photos, custom words, recordings)
+       - Removes categories no longer in defaults
+       - Auto-attaches default local asset paths to old emoji-only tiles
     ---------------------------------------------------------------- */
     let categories = {};
     try {
@@ -982,38 +986,60 @@
       categories = {};
     }
 
-    // Merge in any missing default categories
+    // Remove categories no longer in defaults
+    Object.keys(categories).forEach(key => {
+      if (!defaultCategories[key]) {
+        delete categories[key];
+      }
+    });
+
+    // Merge in / upgrade remaining categories
     Object.keys(defaultCategories).forEach(key => {
       if (!categories[key]) {
-        // Add the whole category from defaults
         categories[key] = JSON.parse(JSON.stringify(defaultCategories[key]));
       } else {
-        // Category exists — make sure items array exists
         if (!Array.isArray(categories[key].items)) {
           categories[key].items = [];
         }
-        // If the default has questions but the saved one doesn't, add them
-        if (!categories[key].questions && defaultCategories[key].questions) {
-          categories[key].questions = [...defaultCategories[key].questions];
+        // Attach default local asset paths to items that are missing them
+        // (only if the user hasn't already set a custom image)
+        const defaultItems = defaultCategories[key].items;
+        categories[key].items = categories[key].items.map(item => {
+          const match = defaultItems.find(d => d.id === item.id);
+          if (match && !item.image && !item.customImage) {
+            return { ...item, image: match.image, icon: item.icon || match.icon };
+          }
+          return item;
+        });
+        // Make sure any brand-new default items appear
+        defaultItems.forEach(dItem => {
+          if (!categories[key].items.find(i => i.id === dItem.id)) {
+            categories[key].items.push(JSON.parse(JSON.stringify(dItem)));
+          }
+        });
+        // Upgrade old string-array questions to bilingual objects
+        if (defaultCategories[key].questions) {
+          const saved = categories[key].questions;
+          if (!saved || (saved.length > 0 && typeof saved[0] === 'string')) {
+            categories[key].questions = JSON.parse(JSON.stringify(defaultCategories[key].questions));
+          }
         }
       }
     });
 
-    // If after merging there's still nothing, fall back to defaults
     if (Object.keys(categories).length === 0) {
       categories = JSON.parse(JSON.stringify(defaultCategories));
     }
 
-    // Persist the merged result so subsequent loads are correct
     localStorage.setItem('aac_categories', JSON.stringify(categories));
 
-    let activeCategory = Object.keys(categories)[0] || "morning";
+    let activeCategory = Object.keys(categories)[0] || "mealtime";
     let isEditMode = false;
     let editingTileId = null;
     let editingCategoryKey = null;
 
-    // Track whether questions are currently visible in the grid
     let showQuestionsInGrid = false;
+    let questionLang = localStorage.getItem('aac_question_lang') || 'en';
 
     let activeCard = null;
     let sentence = [];
@@ -1024,9 +1050,9 @@
     let isRecording = false;
 
     /* ---------- SPEECH ---------- */
-    function speakText(text) {
+    function speakText(text, overrideLang) {
       if (!text) return;
-      const lang = document.getElementById("googleLangSelect").value;
+      const lang = overrideLang || document.getElementById("googleLangSelect").value;
       const speed = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
       const encodedText = encodeURIComponent(text);
       const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodedText}`;
@@ -1073,7 +1099,6 @@
       const tabsNav = document.getElementById("categoryTabs");
       tabsNav.innerHTML = "";
 
-      // Special "All Words" tab first
       const allWrapper = document.createElement("div");
       allWrapper.className = "tab-wrapper";
 
@@ -1089,7 +1114,6 @@
       allWrapper.appendChild(allBtn);
       tabsNav.appendChild(allWrapper);
 
-      // Regular category tabs
       Object.keys(categories).forEach(catKey => {
         const wrapper = document.createElement("div");
         wrapper.className = "tab-wrapper";
@@ -1107,7 +1131,6 @@
         };
         wrapper.appendChild(btn);
 
-        // Small question button (❓) — only if category has questions
         if (categories[catKey].questions && categories[catKey].questions.length > 0) {
           const qBtn = document.createElement("button");
           qBtn.className = `category-question-btn ${showQuestionsInGrid && activeCategory === catKey ? 'active-q' : ''}`;
@@ -1127,7 +1150,6 @@
           wrapper.appendChild(qBtn);
         }
 
-        // Edit category button
         const editBtn = document.createElement("button");
         editBtn.className = "tab-edit-btn";
         editBtn.innerText = "✏️";
@@ -1138,7 +1160,6 @@
         };
         wrapper.appendChild(editBtn);
 
-        // Delete category button
         const delBtn = document.createElement("button");
         delBtn.className = "tab-delete-btn";
         delBtn.innerText = "✕";
@@ -1175,7 +1196,7 @@
       if (!currentCat) return;
 
       currentCat.items.forEach(card => {
-        const cardEl = buildTileElement(card, false);
+        const cardEl = buildTileElement(card);
         grid.appendChild(cardEl);
       });
 
@@ -1190,7 +1211,6 @@
         grid.appendChild(addCardEl);
       }
 
-      // If questions are toggled on for this category, render them in the grid
       if (showQuestionsInGrid && currentCat.questions && currentCat.questions.length > 0) {
         renderQuestionsInGrid(grid, currentCat.questions);
       }
@@ -1208,32 +1228,73 @@
       }
 
       allWords.forEach(card => {
-        const cardEl = buildTileElement(card, false);
+        const cardEl = buildTileElement(card);
         grid.appendChild(cardEl);
       });
     }
 
     /* ---------- QUESTIONS INSIDE GRID ---------- */
     function renderQuestionsInGrid(grid, questions) {
-      // Header
       const header = document.createElement("div");
       header.className = "question-header";
-      header.innerHTML = `❓ Questions for this routine — tap to speak`;
+
+      const label = document.createElement("div");
+      label.className = "question-header-label";
+      label.innerHTML = `❓ Questions — tap to speak`;
+      header.appendChild(label);
+
+      const toggle = document.createElement("div");
+      toggle.className = "question-lang-toggle";
+
+      const enBtn = document.createElement("button");
+      enBtn.innerText = "EN";
+      enBtn.className = questionLang === 'en' ? 'active' : '';
+      enBtn.onclick = () => {
+        questionLang = 'en';
+        localStorage.setItem('aac_question_lang', 'en');
+        renderGrid();
+      };
+
+      const bmBtn = document.createElement("button");
+      bmBtn.innerText = "BM";
+      bmBtn.className = questionLang === 'bm' ? 'active' : '';
+      bmBtn.onclick = () => {
+        questionLang = 'bm';
+        localStorage.setItem('aac_question_lang', 'bm');
+        renderGrid();
+      };
+
+      toggle.appendChild(enBtn);
+      toggle.appendChild(bmBtn);
+      header.appendChild(toggle);
+
       grid.appendChild(header);
 
       questions.forEach((q, idx) => {
+        let displayText;
+        let speakLang = 'en';
+        if (typeof q === 'string') {
+          displayText = q;
+        } else {
+          displayText = q[questionLang] || q.en || '';
+          speakLang = questionLang === 'bm' ? 'ms' : 'en';
+        }
+
         const qCard = document.createElement("div");
         qCard.className = "aac-card question-card";
         qCard.innerHTML = `
           <div class="q-emoji">❓</div>
-          <span>${q}</span>
+          <span>${displayText}</span>
         `;
         qCard.onclick = () => {
           if (isEditMode) return;
-          // Speak the question
-          speakText(q);
-          // Add to sentence strip as a question card
-          const qObj = { id: "q_" + Date.now() + "_" + idx, label: q, icon: "❓", pos: "pos-social" };
+          speakText(displayText, speakLang);
+          const qObj = {
+            id: "q_" + Date.now() + "_" + idx,
+            label: displayText,
+            icon: "❓",
+            pos: "pos-social"
+          };
           sentence.push(qObj);
           updateSentenceBar();
         };
@@ -1242,15 +1303,24 @@
     }
 
     /* ---------- TILE BUILDER ---------- */
-    function buildTileElement(card, showBadge) {
+    function buildTileElement(card) {
       const cardEl = document.createElement("div");
       cardEl.className = `aac-card ${card.pos || 'pos-noun'}`;
 
-      const visualContent = card.image
-        ? `<img src="${card.image}" class="tile-icon-img" alt="${card.label}" />`
-        : `<div class="tile-icon-emoji">${card.icon || "💬"}</div>`;
-
       const showActions = isEditMode && activeCategory !== ALL_WORDS_KEY;
+
+      // Priority: user-uploaded customImage > image path (local asset or URL) > emoji
+      const imgSrc = card.customImage || card.image;
+      let visualContent;
+      if (imgSrc) {
+        visualContent = `
+          <img src="${imgSrc}" class="tile-icon-img" alt="${card.label}"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <div class="tile-icon-emoji" style="display:none;">${card.icon || "💬"}</div>
+        `;
+      } else {
+        visualContent = `<div class="tile-icon-emoji">${card.icon || "💬"}</div>`;
+      }
 
       cardEl.innerHTML = `
         ${showActions ? `<button class="tile-action-btn edit-tile-btn" onclick="openEditWordModal(event, '${card.id}')" title="Edit Word">✏️</button>` : ""}
@@ -1340,6 +1410,7 @@
       document.getElementById("wordModalTitle").innerText = "Add New Word Tile";
       document.getElementById("wordIconInput").value = "";
       document.getElementById("wordLabelInput").value = "";
+      document.getElementById("wordAssetPathInput").value = "";
       document.getElementById("wordPosInput").value = "pos-noun";
       document.getElementById("wordPhotoInput").value = "";
       document.getElementById("existingImagePreview").style.display = "none";
@@ -1357,14 +1428,16 @@
       document.getElementById("wordModalTitle").innerText = "Edit Word Tile";
       document.getElementById("wordIconInput").value = card.icon || "";
       document.getElementById("wordLabelInput").value = card.label || "";
+      document.getElementById("wordAssetPathInput").value = card.customImage ? "" : (card.image || "");
       document.getElementById("wordPosInput").value = card.pos || "pos-noun";
       document.getElementById("wordPhotoInput").value = "";
 
       const previewBox = document.getElementById("existingImagePreview");
       const previewImg = document.getElementById("previewImgElement");
 
-      if (card.image) {
-        previewImg.src = card.image;
+      const currentSrc = card.customImage || card.image;
+      if (currentSrc) {
+        previewImg.src = currentSrc;
         previewBox.style.display = "flex";
       } else {
         previewBox.style.display = "none";
@@ -1377,13 +1450,18 @@
       if (editingTileId) {
         const currentCat = categories[activeCategory];
         const card = currentCat.items.find(item => item.id === editingTileId);
-        if (card) delete card.image;
+        if (card) {
+          delete card.customImage;
+          delete card.image;
+        }
       }
       document.getElementById("existingImagePreview").style.display = "none";
+      document.getElementById("wordAssetPathInput").value = "";
     }
 
     function saveWordTile() {
       const photoInput = document.getElementById("wordPhotoInput");
+      const assetPath = document.getElementById("wordAssetPathInput").value.trim();
       const icon = document.getElementById("wordIconInput").value || "💬";
       const label = document.getElementById("wordLabelInput").value.trim();
       const pos = document.getElementById("wordPosInput").value;
@@ -1393,6 +1471,7 @@
       const file = photoInput.files[0];
 
       if (file) {
+        // Uploaded photo takes priority — stored as base64 customImage
         const reader = new FileReader();
         reader.onload = function (e) {
           const img = new Image();
@@ -1400,55 +1479,75 @@
           img.onload = function () {
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
-            canvas.width = 150;
-            canvas.height = 150;
-            ctx.drawImage(img, 0, 0, 150, 150);
-            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
-            commitWordChanges(label, icon, pos, compressedBase64);
+            canvas.width = 200;
+            canvas.height = 200;
+            ctx.drawImage(img, 0, 0, 200, 200);
+            const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+            commitWordChanges(label, icon, pos, compressedBase64, null);
           };
         };
         reader.readAsDataURL(file);
+      } else if (assetPath) {
+        // Local asset path provided
+        commitWordChanges(label, icon, pos, null, assetPath);
       } else {
+        // No new image
         const currentCat = categories[activeCategory];
         let existingImg = null;
+        let existingCustom = null;
         if (editingTileId) {
           const card = currentCat.items.find(item => item.id === editingTileId);
-          if (card && card.image && document.getElementById("existingImagePreview").style.display !== "none") {
+          if (card) {
             existingImg = card.image;
+            existingCustom = card.customImage;
           }
         }
-        commitWordChanges(label, icon, pos, existingImg);
+        commitWordChanges(label, icon, pos, existingCustom, existingImg);
       }
     }
 
-    function commitWordChanges(label, icon, pos, imageBase64) {
+    function commitWordChanges(label, icon, pos, customImageBase64, imagePath) {
       const currentCat = categories[activeCategory];
 
       if (editingTileId) {
         const index = currentCat.items.findIndex(item => item.id === editingTileId);
         if (index !== -1) {
-          currentCat.items[index] = {
+          const existing = currentCat.items[index];
+          const updated = {
             id: editingTileId,
             label: label,
             icon: icon,
-            pos: pos,
-            ...(imageBase64 ? { image: imageBase64 } : {})
+            pos: pos
           };
+          if (customImageBase64) {
+            updated.customImage = customImageBase64;
+          } else if (existing.customImage && !imagePath) {
+            updated.customImage = existing.customImage;
+          }
+          if (imagePath) {
+            updated.image = imagePath;
+          } else if (existing.image && !customImageBase64) {
+            updated.image = existing.image;
+          }
+          currentCat.items[index] = updated;
         }
       } else {
-        currentCat.items.push({
+        const newItem = {
           id: "word_" + Date.now(),
           label: label,
           icon: icon,
-          pos: pos,
-          ...(imageBase64 ? { image: imageBase64 } : {})
-        });
+          pos: pos
+        };
+        if (customImageBase64) newItem.customImage = customImageBase64;
+        if (imagePath) newItem.image = imagePath;
+        currentCat.items.push(newItem);
       }
 
       saveData();
       closeModal("addWordOverlay");
       document.getElementById("wordLabelInput").value = "";
       document.getElementById("wordPhotoInput").value = "";
+      document.getElementById("wordAssetPathInput").value = "";
       renderGrid();
     }
 
@@ -1465,8 +1564,11 @@
       activeCard = card;
       const modalGraphic = document.getElementById("modalGraphic");
 
-      if (card.image) {
-        modalGraphic.innerHTML = `<img src="${card.image}" alt="${card.label}" />`;
+      const imgSrc = card.customImage || card.image;
+      if (imgSrc) {
+        modalGraphic.innerHTML = `<img src="${imgSrc}" alt="${card.label}"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+          <div class="emoji-large" style="display:none;">${card.icon || "💬"}</div>`;
       } else {
         modalGraphic.innerHTML = `<div class="emoji-large">${card.icon || "💬"}</div>`;
       }
@@ -1543,9 +1645,15 @@
         const cardEl = document.createElement("div");
         cardEl.className = `message-card ${card.pos || 'pos-noun'}`;
 
-        const visualContent = card.image
-          ? `<img src="${card.image}" alt="${card.label}" />`
-          : `<div class="msg-emoji">${card.icon || "💬"}</div>`;
+        const imgSrc = card.customImage || card.image;
+        let visualContent;
+        if (imgSrc) {
+          visualContent = `<img src="${imgSrc}" alt="${card.label}"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+            <div class="msg-emoji" style="display:none;">${card.icon || "💬"}</div>`;
+        } else {
+          visualContent = `<div class="msg-emoji">${card.icon || "💬"}</div>`;
+        }
 
         cardEl.innerHTML = `
           ${visualContent}
