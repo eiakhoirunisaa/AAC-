@@ -878,19 +878,19 @@
     // POS order — groups are laid out one after another with NO header rows
     // in between so the grid stays perfectly filled.
     const POS_ORDER = ["pos-noun", "pos-verb", "pos-adj", "pos-social", "pos-routine"];
-
+4
     const defaultCategories = {
       mealtime: {
         name: "🍽️ Mealtime",
         items: [
           { id: "i",        label: "I",        icon: "🙋🏻", pos: "pos-social", image: ASSETS_FOLDER + "i.png" },
-          { id: "want",     label: "Want",     icon: "👉", pos: "pos-verb",   image: ASSETS_FOLDER + "want.png" },
+          { id: "want",     label: "Want",     icon: "🤲🏻", pos: "pos-verb",   image: ASSETS_FOLDER + "want.png" },
           { id: "eat",      label: "Eat",      icon: "🍽️", pos: "pos-verb",   image: ASSETS_FOLDER + "eat.png" },
           { id: "drink",    label: "Drink",    icon: "🥤", pos: "pos-verb",   image: ASSETS_FOLDER + "drink.png" },
-          { id: "hungry",   label: "Hungry",   icon: "🍎", pos: "pos-adj",    image: ASSETS_FOLDER + "hungry.png" },
+          { id: "hungry",   label: "Hungry",   icon: "", pos: "pos-adj",    image: ASSETS_FOLDER + "hungry.png" },
           { id: "thirsty",  label: "Thirsty",  icon: "💧", pos: "pos-adj",    image: ASSETS_FOLDER + "thirsty.png" },
-          { id: "more",     label: "More",     icon: "➕", pos: "pos-verb",   image: ASSETS_FOLDER + "more.png" },
-          { id: "enough",   label: "Enough",   icon: "✅", pos: "pos-verb",   image: ASSETS_FOLDER + "enough.png" },
+          { id: "more",     label: "More",     icon: "➕", pos: "pos-social",   image: ASSETS_FOLDER + "more.png" },
+          { id: "enough",   label: "Enough",   icon: "✅", pos: "pos-social",   image: ASSETS_FOLDER + "enough.png" },
           { id: "rice",     label: "Rice",     icon: "🍚", pos: "pos-noun",   image: ASSETS_FOLDER + "rice.png" },
           { id: "noodle",   label: "Mee",      icon: "🍝", pos: "pos-noun",   image: ASSETS_FOLDER + "mee.png" },
           { id: "chicken",  label: "Chicken",  icon: "🍗", pos: "pos-noun",   image: ASSETS_FOLDER + "chicken.png" },
@@ -899,7 +899,11 @@
           { id: "milk",     label: "Milk",     icon: "🍼", pos: "pos-noun",   image: ASSETS_FOLDER + "milk.png" },
           { id: "hot",      label: "Hot",      icon: "🔥", pos: "pos-adj",    image: ASSETS_FOLDER + "hot.png" },
           { id: "cold",     label: "Cold",     icon: "❄️", pos: "pos-adj",    image: ASSETS_FOLDER + "cold.png" },
-          { id: "finish",   label: "Finish",   icon: "🏁", pos: "pos-verb",   image: ASSETS_FOLDER + "finish.png" }
+          { id: "finish",   label: "Finish",   icon: "🏁", pos: "pos-verb",   image: ASSETS_FOLDER + "finish.png" },
+          { id: "yes",      label: "Yes",      icon: "✅", pos: "pos-verb",   image: ASSETS_FOLDER + "yes.png" },
+          { id: "no",       label: "No",       icon: "❌", pos: "pos-verb",   image: ASSETS_FOLDER + "no.png" },
+          { id: "yummy",    label: "Yummy",    icon: "😋", pos: "pos-adj",    image: ASSETS_FOLDER + "yummy.png" },
+          { id: "not_yummy",label: "Not Yummy",icon: "🤢", pos: "pos-adj",    image: ASSETS_FOLDER + "not_yummy.png" }
         ],
         questions: [
           { en: "Are you hungry / thirsty?", bm: "Kamu lapar / haus?" },
@@ -913,12 +917,33 @@
       bathtime: {
         name: "🛁 Bath Time",
         items: [
-          { id: "bath",       label: "Bath",       icon: "🛁", pos: "pos-noun", image: ASSETS_FOLDER + "bath.png" },
-          { id: "shampoo",    label: "Shampoo",    icon: "🧴", pos: "pos-noun", image: ASSETS_FOLDER + "shampoo.png" },
-          { id: "towel",      label: "Towel",      icon: "🧻", pos: "pos-noun", image: ASSETS_FOLDER + "towel.png" },
-          { id: "toothbrush", label: "Toothbrush", icon: "🪥", pos: "pos-noun", image: ASSETS_FOLDER + "toothbrush.png" },
-          { id: "toothpaste", label: "Toothpaste", icon: "🦷", pos: "pos-noun", image: ASSETS_FOLDER + "toothpaste.png" },
-          { id: "water_bath", label: "Water",      icon: "💧", pos: "pos-noun", image: ASSETS_FOLDER + "water.png" }
+          { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-social",  image: ASSETS_FOLDER + "i.png" },
+          { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
+          { id: "bath",       label: "Bath",        icon: "🛁", pos: "pos-noun",    image: ASSETS_FOLDER + "bath.png" },
+          { id: "shampoo",    label: "Shampoo",     icon: "🧴", pos: "pos-noun",    image: ASSETS_FOLDER + "shampoo.png" },
+          { id: "towel",      label: "Towel",       icon: "🧻", pos: "pos-noun",    image: ASSETS_FOLDER + "towel.png" },
+          { id: "toothbrush", label: "Toothbrush",  icon: "🪥", pos: "pos-noun",    image: ASSETS_FOLDER + "toothbrush.png" },
+          { id: "toothpaste", label: "Toothpaste",  icon: "🦷", pos: "pos-noun",    image: ASSETS_FOLDER + "toothpaste.png" },
+          { id: "water_bath", label: "Water",       icon: "💧", pos: "pos-noun",    image: ASSETS_FOLDER + "water.png" },
+          { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
+          { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
+          { id: "hot",        label: "Hot",         icon: "🔥", pos: "pos-adj",     image: ASSETS_FOLDER + "hot.png" },
+          { id: "cold",       label: "Cold",        icon: "❄️", pos: "pos-adj",     image: ASSETS_FOLDER + "cold.png" },
+          { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-social",  image: ASSETS_FOLDER + "mummy.png" },
+          { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" },
+          { id: "sister",     label: "Sister",      icon: "👧🏻", pos: "pos-social",  image: ASSETS_FOLDER + "sister.png" },
+          { id: "brother",    label: "Brother",     icon: "👦🏻", pos: "pos-social",  image: ASSETS_FOLDER + "brother.png" },
+          { id: "shirt",    label: "Shirt",     icon: "👕", pos: "pos-noun",  image: ASSETS_FOLDER + "shirt.png" },
+          { id: "pant",    label: "Pant",     icon: "👖", pos: "pos-noun",  image: ASSETS_FOLDER + "pant.png" },
+          { id: "skirt",    label: "Skirt",     icon: "👗", pos: "pos-noun",  image: ASSETS_FOLDER + "skirt.png" },
+          { id: "this",    label: "This",     icon: "👇🏻", pos: "pos-noun",  image: ASSETS_FOLDER + "skirt.png" },
+          { id: "wear",    label: "Wear",     icon: "👕", pos: "pos-verb",  image: ASSETS_FOLDER + "wear.png" },
+          { id: "red",    label: "Red",     icon: "🔴", pos: "pos-adj",  image: ASSETS_FOLDER + "red.png" },
+          { id: "blue",    label: "Blue",     icon: "🔵", pos: "pos-adj",  image: ASSETS_FOLDER + "blue.png" },
+          { id: "white",    label: "White",     icon: "⚪", pos: "pos-adj",  image: ASSETS_FOLDER + "white.png" },
+          { id: "yellow",    label: "Yellow",     icon: "🟡", pos: "pos-adj",  image: ASSETS_FOLDER + "yellow.png" },
+          { id: "green",    label: "Green",     icon: "🟢", pos: "pos-adj",  image: ASSETS_FOLDER + "green.png" },
+          { id: "orange",    label: "Orange",     icon: "🟠", pos: "pos-adj",  image: ASSETS_FOLDER + "orange.png" },
         ],
         questions: [
           { en: "Do you want to take bath?", bm: "Kamu mahu mandi?" },
@@ -934,12 +959,22 @@
       sleeptime: {
         name: "😴 Sleep Time",
         items: [
+          { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-social",  image: ASSETS_FOLDER + "i.png" },
           { id: "sleepy",    label: "Sleepy",    icon: "😴", pos: "pos-adj",   image: ASSETS_FOLDER + "sleepy.png" },
-          { id: "light_off", label: "Light Off", icon: "💡", pos: "pos-verb",  image: ASSETS_FOLDER + "light_off.png" },
+          { id: "light", label: "Light", icon: "💡", pos: "pos-verb",  image: ASSETS_FOLDER + "light.png" },
           { id: "pillow",    label: "Pillow",    icon: "🛏️", pos: "pos-noun", image: ASSETS_FOLDER + "pillow.png" },
           { id: "blanket",   label: "Blanket",   icon: "🧣", pos: "pos-noun",  image: ASSETS_FOLDER + "blanket.png" },
           { id: "doll",      label: "Doll",      icon: "🧸", pos: "pos-noun",  image: ASSETS_FOLDER + "doll.png" },
-          { id: "pee",       label: "Pee",       icon: "🚽", pos: "pos-verb",  image: ASSETS_FOLDER + "pee.png" }
+          { id: "pee",       label: "Pee",       icon: "🚽", pos: "pos-verb",  image: ASSETS_FOLDER + "pee.png" },
+          { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
+          { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
+          { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
+          { id: "off",       label: "Off",        icon: "📴", pos: "pos-verb",    image: ASSETS_FOLDER + "off.png" },
+          { id: "sleep",       label: "Sleep",        icon: "😴", pos: "pos-verb",    image: ASSETS_FOLDER + "sleep.png" },
+          { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-social",  image: ASSETS_FOLDER + "mummy.png" },
+          { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" },
+          { id: "doll",      label: "Doll",       icon: "🧸", pos: "pos-social",  image: ASSETS_FOLDER + "doll.png" },
+          { id: "doll",      label: "Doll",       icon: "🧸", pos: "pos-social",  image: ASSETS_FOLDER + "doll.png" },
         ],
         questions: [
           { en: "Are you sleepy?", bm: "Adakah kamu mengantuk?" },
