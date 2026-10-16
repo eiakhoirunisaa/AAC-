@@ -237,12 +237,19 @@
     }
 
     .add-tab-btn {
-      background: #E2E8F0;
-      border: none;
+      background: #DBEAFE;
+      border: 1px dashed #2563EB;
       border-radius: 12px 12px 0 0;
-      padding: 8px 14px;
+      padding: 10px 18px;
       cursor: pointer;
-      color: #475569;
+      color: #1D4ED8;
+      font-size: 0.9rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .add-tab-btn:hover {
+      background: #BFDBFE;
     }
 
     .category-question-btn {
@@ -799,8 +806,12 @@
     <div class="modal">
       <h2 style="margin-bottom: 16px;">User Guide 💡</h2>
       <div class="guide-section">
+        <h3>➕ Add Routine</h3>
+        <p>Tap <b>Edit</b> at the bottom to enter edit mode. A blue <b>➕ Add Routine</b> button appears at the end of the tab row. Tap it to add a new routine category. Use the ✏️ and ✕ badges on any tab to edit or delete it.</p>
+      </div>
+      <div class="guide-section">
         <h3>🎨 Auto Grouping by Part of Speech</h3>
-        <p>Words are automatically sorted by part of speech — Nouns first, then Verbs, Adjectives, Social, then Routine. Groups flow seamlessly across rows with no gaps. The tile color tells you the group:</p>
+        <p>Words are automatically sorted by part of speech — Nouns first, then Verbs, Adjectives, Social, then Routine.</p>
         <div class="color-legend-grid">
           <div class="legend-item pos-noun">🟧 Orange: Noun</div>
           <div class="legend-item pos-verb">🟩 Green: Verb</div>
@@ -808,10 +819,6 @@
           <div class="legend-item pos-social">🟨 Yellow: Social</div>
           <div class="legend-item pos-routine" style="grid-column: span 2;">🟪 Purple: Routine</div>
         </div>
-      </div>
-      <div class="guide-section">
-        <h3>🖼️ Local Image Assets</h3>
-        <p>All word tiles load images from the <b>assets/</b> folder. Transparent PNGs blend seamlessly with the tile's pastel color.</p>
       </div>
       <div class="guide-section">
         <h3>❓ Question Button & Language Toggle</h3>
@@ -828,10 +835,10 @@
   <!-- Add Category Modal -->
   <div class="overlay" id="addCategoryOverlay">
     <div class="modal">
-      <h2 style="margin-bottom: 16px;">Add Routine Category</h2>
+      <h2 style="margin-bottom: 16px;" id="addCategoryTitle">Add Routine Category</h2>
       <div class="input-group">
-        <label>Category Emoji Icon:</label>
-        <input type="text" id="catIconInput" placeholder="e.g. 🎨" maxlength="2">
+        <label>Category Emoji Icon (optional):</label>
+        <input type="text" id="catIconInput" placeholder="e.g. 🎨" maxlength="4">
         <label>Category Name:</label>
         <input type="text" id="catNameInput" placeholder="e.g. Art Class">
       </div>
@@ -854,7 +861,7 @@
         <label style="margin-top: 8px;">Option 2: Local Asset Path</label>
         <input type="text" id="wordAssetPathInput" placeholder="assets/my-image.png">
         <label style="margin-top: 8px;">Option 3: Emoji (fallback)</label>
-        <input type="text" id="wordIconInput" placeholder="e.g. 🖌️" maxlength="2">
+        <input type="text" id="wordIconInput" placeholder="e.g. 🖌️" maxlength="4">
         <label>Word / Phrase Label:</label>
         <input type="text" id="wordLabelInput" placeholder="e.g. Paint Brush">
         <label>Part of Speech Color:</label>
@@ -875,10 +882,8 @@
     const ALL_WORDS_KEY = "__all_words__";
     const ASSETS_FOLDER = "assets/";
 
-    // POS order — groups are laid out one after another with NO header rows
-    // in between so the grid stays perfectly filled.
     const POS_ORDER = ["pos-noun", "pos-verb", "pos-adj", "pos-social", "pos-routine"];
-4
+
     const defaultCategories = {
       mealtime: {
         name: "🍽️ Mealtime",
@@ -889,8 +894,8 @@
           { id: "drink",    label: "Drink",    icon: "🥤", pos: "pos-verb",   image: ASSETS_FOLDER + "drink.png" },
           { id: "hungry",   label: "Hungry",   icon: "🤤", pos: "pos-adj",    image: ASSETS_FOLDER + "hungry.png" },
           { id: "thirsty",  label: "Thirsty",  icon: "💧", pos: "pos-adj",    image: ASSETS_FOLDER + "thirsty.png" },
-          { id: "more",     label: "More",     icon: "➕", pos: "pos-social",   image: ASSETS_FOLDER + "more.png" },
-          { id: "enough",   label: "Enough",   icon: "🚫", pos: "pos-social",   image: ASSETS_FOLDER + "enough.png" },
+          { id: "more",     label: "More",     icon: "➕", pos: "pos-social", image: ASSETS_FOLDER + "more.png" },
+          { id: "enough",   label: "Enough",   icon: "🚫", pos: "pos-social", image: ASSETS_FOLDER + "enough.png" },
           { id: "rice",     label: "Rice",     icon: "🍚", pos: "pos-noun",   image: ASSETS_FOLDER + "rice.png" },
           { id: "noodle",   label: "Mee",      icon: "🍝", pos: "pos-noun",   image: ASSETS_FOLDER + "mee.png" },
           { id: "chicken",  label: "Chicken",  icon: "🍗", pos: "pos-noun",   image: ASSETS_FOLDER + "chicken.png" },
@@ -933,17 +938,17 @@
           { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" },
           { id: "sister",     label: "Sister",      icon: "👧🏻", pos: "pos-social",  image: ASSETS_FOLDER + "sister.png" },
           { id: "brother",    label: "Brother",     icon: "👦🏻", pos: "pos-social",  image: ASSETS_FOLDER + "brother.png" },
-          { id: "shirt",    label: "Shirt",     icon: "👕", pos: "pos-noun",  image: ASSETS_FOLDER + "shirt.png" },
-          { id: "pant",    label: "Pant",     icon: "👖", pos: "pos-noun",  image: ASSETS_FOLDER + "pant.png" },
-          { id: "skirt",    label: "Skirt",     icon: "👗", pos: "pos-noun",  image: ASSETS_FOLDER + "skirt.png" },
-          { id: "this",    label: "This",     icon: "👇🏻", pos: "pos-noun",  image: ASSETS_FOLDER + "skirt.png" },
-          { id: "wear",    label: "Wear",     icon: "👕", pos: "pos-verb",  image: ASSETS_FOLDER + "wear.png" },
-          { id: "red",    label: "Red",     icon: "🔴", pos: "pos-adj",  image: ASSETS_FOLDER + "red.png" },
-          { id: "blue",    label: "Blue",     icon: "🔵", pos: "pos-adj",  image: ASSETS_FOLDER + "blue.png" },
-          { id: "white",    label: "White",     icon: "⚪", pos: "pos-adj",  image: ASSETS_FOLDER + "white.png" },
-          { id: "yellow",    label: "Yellow",     icon: "🟡", pos: "pos-adj",  image: ASSETS_FOLDER + "yellow.png" },
-          { id: "green",    label: "Green",     icon: "🟢", pos: "pos-adj",  image: ASSETS_FOLDER + "green.png" },
-          { id: "orange",    label: "Orange",     icon: "🟠", pos: "pos-adj",  image: ASSETS_FOLDER + "orange.png" },
+          { id: "shirt",      label: "Shirt",       icon: "👕", pos: "pos-noun",    image: ASSETS_FOLDER + "shirt.png" },
+          { id: "pant",       label: "Pant",        icon: "👖", pos: "pos-noun",    image: ASSETS_FOLDER + "pant.png" },
+          { id: "skirt",      label: "Skirt",       icon: "👗", pos: "pos-noun",    image: ASSETS_FOLDER + "skirt.png" },
+          { id: "this",       label: "This",        icon: "👇🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "skirt.png" },
+          { id: "wear",       label: "Wear",        icon: "👕", pos: "pos-verb",    image: ASSETS_FOLDER + "wear.png" },
+          { id: "red",        label: "Red",         icon: "🔴", pos: "pos-adj",     image: ASSETS_FOLDER + "red.png" },
+          { id: "blue",       label: "Blue",        icon: "🔵", pos: "pos-adj",     image: ASSETS_FOLDER + "blue.png" },
+          { id: "white",      label: "White",       icon: "⚪", pos: "pos-adj",     image: ASSETS_FOLDER + "white.png" },
+          { id: "yellow",     label: "Yellow",      icon: "🟡", pos: "pos-adj",     image: ASSETS_FOLDER + "yellow.png" },
+          { id: "green",      label: "Green",       icon: "🟢", pos: "pos-adj",     image: ASSETS_FOLDER + "green.png" },
+          { id: "orange",     label: "Orange",      icon: "🟠", pos: "pos-adj",     image: ASSETS_FOLDER + "orange.png" }
         ],
         questions: [
           { en: "Do you want to take bath?", bm: "Kamu mahu mandi?" },
@@ -960,21 +965,19 @@
         name: "😴 Sleep Time",
         items: [
           { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-social",  image: ASSETS_FOLDER + "i.png" },
-          { id: "sleepy",    label: "Sleepy",    icon: "😴", pos: "pos-adj",   image: ASSETS_FOLDER + "sleepy.png" },
-          { id: "light", label: "Light", icon: "💡", pos: "pos-verb",  image: ASSETS_FOLDER + "light.png" },
-          { id: "pillow",    label: "Pillow",    icon: "🛏️", pos: "pos-noun", image: ASSETS_FOLDER + "pillow.png" },
-          { id: "blanket",   label: "Blanket",   icon: "🧣", pos: "pos-noun",  image: ASSETS_FOLDER + "blanket.png" },
-          { id: "doll",      label: "Doll",      icon: "🧸", pos: "pos-noun",  image: ASSETS_FOLDER + "doll.png" },
-          { id: "pee",       label: "Pee",       icon: "🚽", pos: "pos-verb",  image: ASSETS_FOLDER + "pee.png" },
+          { id: "sleepy",     label: "Sleepy",      icon: "😴", pos: "pos-adj",     image: ASSETS_FOLDER + "sleepy.png" },
+          { id: "light",      label: "Light",       icon: "💡", pos: "pos-verb",    image: ASSETS_FOLDER + "light.png" },
+          { id: "pillow",     label: "Pillow",      icon: "🛏️", pos: "pos-noun",    image: ASSETS_FOLDER + "pillow.png" },
+          { id: "blanket",    label: "Blanket",     icon: "🧣", pos: "pos-noun",    image: ASSETS_FOLDER + "blanket.png" },
+          { id: "doll",       label: "Doll",        icon: "🧸", pos: "pos-noun",    image: ASSETS_FOLDER + "doll.png" },
+          { id: "pee",        label: "Pee",         icon: "🚽", pos: "pos-verb",    image: ASSETS_FOLDER + "pee.png" },
           { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
           { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
           { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
-          { id: "off",       label: "Off",        icon: "📴", pos: "pos-verb",    image: ASSETS_FOLDER + "off.png" },
-          { id: "sleep",       label: "Sleep",        icon: "😴", pos: "pos-verb",    image: ASSETS_FOLDER + "sleep.png" },
+          { id: "off",        label: "Off",         icon: "📴", pos: "pos-verb",    image: ASSETS_FOLDER + "off.png" },
+          { id: "sleep",      label: "Sleep",       icon: "😴", pos: "pos-verb",    image: ASSETS_FOLDER + "sleep.png" },
           { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-social",  image: ASSETS_FOLDER + "mummy.png" },
-          { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" },
-          { id: "doll",      label: "Doll",       icon: "🧸", pos: "pos-social",  image: ASSETS_FOLDER + "doll.png" },
-          { id: "doll",      label: "Doll",       icon: "🧸", pos: "pos-social",  image: ASSETS_FOLDER + "doll.png" },
+          { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" }
         ],
         questions: [
           { en: "Are you sleepy?", bm: "Adakah kamu mengantuk?" },
@@ -988,11 +991,6 @@
 
     /* ----------------------------------------------------------------
        LOAD + MERGE + CLEANUP STRATEGY
-       - Keeps user-added words (ids starting with "word_") and recordings
-       - Removes categories no longer in defaults
-       - Removes stale default items whose id no longer exists in defaults
-       - Attaches default local asset paths to items missing them
-       - Upgrades old string-array questions to bilingual objects
     ---------------------------------------------------------------- */
     let categories = {};
     try {
@@ -1001,14 +999,15 @@
       categories = {};
     }
 
-    // Remove categories that are no longer in defaults
+    // Remove categories no longer in defaults — BUT keep user-created categories
+    // (ids starting with "cat_") that the user added via ➕ Add Routine.
     Object.keys(categories).forEach(key => {
-      if (!defaultCategories[key]) {
+      if (!defaultCategories[key] && !key.startsWith('cat_')) {
         delete categories[key];
       }
     });
 
-    // Merge in / upgrade remaining categories
+    // Merge in / upgrade remaining default categories
     Object.keys(defaultCategories).forEach(key => {
       if (!categories[key]) {
         categories[key] = JSON.parse(JSON.stringify(defaultCategories[key]));
@@ -1019,7 +1018,6 @@
 
         const defaultItems = defaultCategories[key].items;
 
-        // 1) Attach default images to items that are missing them
         categories[key].items = categories[key].items.map(item => {
           const match = defaultItems.find(d => d.id === item.id);
           if (match && !item.image && !item.customImage) {
@@ -1028,22 +1026,18 @@
           return item;
         });
 
-        // 2) Ensure every default item exists
         defaultItems.forEach(dItem => {
           if (!categories[key].items.find(i => i.id === dItem.id)) {
             categories[key].items.push(JSON.parse(JSON.stringify(dItem)));
           }
         });
 
-        // 3) *** CLEANUP *** — remove stale default items that no longer exist
-        //    in defaultCategories. Keep user-created items (id starts with "word_").
         const defaultIds = new Set(defaultItems.map(d => d.id));
         categories[key].items = categories[key].items.filter(item => {
           if (typeof item.id === 'string' && item.id.startsWith('word_')) return true;
           return defaultIds.has(item.id);
         });
 
-        // 4) Upgrade old string-array questions to bilingual objects
         if (defaultCategories[key].questions) {
           const saved = categories[key].questions;
           if (!saved || (saved.length > 0 && typeof saved[0] === 'string')) {
@@ -1057,7 +1051,6 @@
       categories = JSON.parse(JSON.stringify(defaultCategories));
     }
 
-    // Persist the cleaned-up result so subsequent loads are stable
     localStorage.setItem('aac_categories', JSON.stringify(categories));
 
     let activeCategory = Object.keys(categories)[0] || "mealtime";
@@ -1110,7 +1103,6 @@
       return all;
     }
 
-    /* ---------- GROUPING ---------- */
     function sortByPos(items) {
       const buckets = {};
       POS_ORDER.forEach(pos => buckets[pos] = []);
@@ -1214,10 +1206,12 @@
         tabsNav.appendChild(wrapper);
       });
 
+      // ➕ Add Routine button (always visible in Edit mode)
       if (isEditMode) {
         const addBtn = document.createElement("button");
         addBtn.className = "add-tab-btn";
         addBtn.innerText = "➕ Add Routine";
+        addBtn.title = "Add a new routine category";
         addBtn.onclick = () => openAddCategoryModal();
         tabsNav.appendChild(addBtn);
       }
@@ -1382,10 +1376,12 @@
     /* ---------- CATEGORY EDITING ---------- */
     function openAddCategoryModal() {
       editingCategoryKey = null;
-      document.querySelector("#addCategoryOverlay h2").innerText = "Add Routine Category";
+      document.getElementById("addCategoryTitle").innerText = "Add Routine Category";
       document.getElementById("catIconInput").value = "";
       document.getElementById("catNameInput").value = "";
       openModal("addCategoryOverlay");
+      // Focus on name field after a beat
+      setTimeout(() => document.getElementById("catNameInput").focus(), 250);
     }
 
     function openEditCategoryModal(catKey) {
@@ -1395,19 +1391,21 @@
       const icon = parts[0];
       const name = parts.slice(1).join(" ");
 
-      document.querySelector("#addCategoryOverlay h2").innerText = "Edit Routine Category";
+      document.getElementById("addCategoryTitle").innerText = "Edit Routine Category";
       document.getElementById("catIconInput").value = icon;
       document.getElementById("catNameInput").value = name;
       openModal("addCategoryOverlay");
+      setTimeout(() => document.getElementById("catNameInput").focus(), 250);
     }
 
     function saveNewCategory() {
-      const icon = document.getElementById("catIconInput").value || "📋";
+      const icon = document.getElementById("catIconInput").value.trim() || "📋";
       const name = document.getElementById("catNameInput").value.trim();
 
       if (!name) return alert("Please enter a routine category name.");
 
       if (editingCategoryKey) {
+        // Editing existing category
         categories[editingCategoryKey].name = `${icon} ${name}`;
         saveData();
         closeModal("addCategoryOverlay");
@@ -1415,6 +1413,7 @@
         renderTabs();
         renderGrid();
       } else {
+        // Creating new category
         const newKey = "cat_" + Date.now();
         categories[newKey] = {
           name: `${icon} ${name}`,
@@ -1425,6 +1424,7 @@
         showQuestionsInGrid = false;
         closeModal("addCategoryOverlay");
         document.getElementById("catNameInput").value = "";
+        document.getElementById("catIconInput").value = "";
         renderTabs();
         renderGrid();
       }
