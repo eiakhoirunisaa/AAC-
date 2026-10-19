@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Universal AAC · Profiles</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400&display=swap');
@@ -13,15 +13,14 @@
       --radius-lg: 18px;
       --radius-sm: 12px;
 
-      /* UPDATED POS COLORS */
-      --pos-pronoun-bg: #FFF3B0;     /* Yellow */
-      --pos-verb-bg: #D1F7C4;        /* Green */
-      --pos-adj-bg: #D2E9FF;         /* Blue */
-      --pos-adverb-bg: #FFD6E8;      /* Pink */
-      --pos-prep-bg: #FFD8B5;        /* Peach */
-      --pos-question-bg: #FFE4A0;    /* Light Gold */
-      --pos-social-bg: #E0F2FE;      /* Light Cyan */
-      --pos-noun-bg: #FFEAD2;        /* Orange */
+      --pos-pronoun-bg: #FFF3B0;
+      --pos-verb-bg: #D1F7C4;
+      --pos-adj-bg: #D2E9FF;
+      --pos-adverb-bg: #FFD6E8;
+      --pos-prep-bg: #FFD8B5;
+      --pos-question-bg: #FFE4A0;
+      --pos-social-bg: #E0F2FE;
+      --pos-noun-bg: #FFEAD2;
 
       --question-bg: #FEF3C7;
       --question-border: #F59E0B;
@@ -33,6 +32,7 @@
       padding: 0;
       font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 400 !important;
+      -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
     }
 
     body {
@@ -41,7 +41,9 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
+      height: 100dvh; /* Better height for mobile keyboards/bars */
       overflow: hidden;
+      user-select: none; /* Prevents accidental text selection on mobile */
     }
 
     /* Top Bar */
@@ -330,6 +332,7 @@
       overflow-y: auto;
       background: #FFFFFF;
       align-content: start;
+      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
     }
 
     /* 3D Tile */
@@ -493,6 +496,7 @@
       background: #FFFFFF;
       box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
       padding: 10px 16px;
+      padding-bottom: max(10px, env(safe-area-inset-bottom)); /* iOS safe area */
       gap: 12px;
     }
 
@@ -1036,7 +1040,7 @@
 
   <!-- Profile Management Modal -->
   <div class="overlay" id="profileManageOverlay">
-    <div class="modal">
+    <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close-x" onclick="closeModal('profileManageOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;">Manage Profiles 👥</h2>
       <div class="profile-list" id="profileListContainer"></div>
@@ -1051,7 +1055,7 @@
 
   <!-- Voice Settings Modal -->
   <div class="overlay" id="settingsOverlay">
-    <div class="modal">
+    <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close-x" onclick="closeModal('settingsOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 20px;">Voice Settings 🌐</h2>
       <div class="input-group">
@@ -1075,13 +1079,12 @@
   </div>
 
   <!-- AAC Card Pop-Up Modal -->
-  <div class="overlay" id="popupOverlay">
-    <div class="modal">
+  <div class="overlay" id="popupOverlay" onclick="closePopup()">
+    <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close-x" onclick="closePopup()" title="Close">✕</button>
       <div class="modal-graphic" id="modalGraphic"></div>
       <h2 class="modal-title" id="modalTitle">Label</h2>
 
-      <!-- Voice status banner (shown when a custom voice exists) -->
       <div class="voice-status" id="voiceStatusBanner" style="display: none;">
         <span class="icon">🎙️</span>
         <span id="voiceStatusText">Custom voice saved</span>
@@ -1108,7 +1111,7 @@
 
   <!-- Help & Guide Modal -->
   <div class="overlay" id="infoCornerOverlay">
-    <div class="modal">
+    <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close-x" onclick="closeModal('infoCornerOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;">User Guide 💡</h2>
       <div class="guide-section">
@@ -1147,7 +1150,7 @@
 
   <!-- Add Category Modal -->
   <div class="overlay" id="addCategoryOverlay">
-    <div class="modal">
+    <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close-x" onclick="closeModal('addCategoryOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;" id="addCategoryTitle">Add Routine Category</h2>
       <div class="input-group">
@@ -1163,7 +1166,7 @@
 
   <!-- Add or Edit Word Tile Modal -->
   <div class="overlay" id="addWordOverlay">
-    <div class="modal">
+    <div class="modal" onclick="event.stopPropagation()">
       <button class="modal-close-x" onclick="closeModal('addWordOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;" id="wordModalTitle">Add New Word Tile</h2>
       <div class="input-group">
@@ -1206,7 +1209,6 @@
     const ALL_WORDS_KEY = "__all_words__";
     const ASSETS_FOLDER = "assets/";
     
-    // UPDATED POS ARRAY based on the provided image order
     const POS_ORDER = [
       "pos-pronoun", 
       "pos-verb", 
@@ -1219,7 +1221,7 @@
     ];
 
     /* ============================================================
-       DEFAULT DATA — single source of truth
+       DEFAULT DATA
     ============================================================ */
     function getDefaultCategoriesForNewProfile() {
       return {
@@ -1329,7 +1331,7 @@
     }
 
     /* ============================================================
-       PROFILE LOADING — with merge-with-defaults repair
+       PROFILE LOADING
     ============================================================ */
     function deepClone(obj) {
       return JSON.parse(JSON.stringify(obj));
@@ -1430,6 +1432,11 @@
     let recordedSamples = [];
     let recordedSampleRate = 44100;
     let scriptProcessor = null;
+
+    // Pre-load the speech synthesis voices (Helps Safari/iOS load voices)
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+    }
 
     /* ============================================================
        PERSISTENCE
@@ -1575,24 +1582,46 @@
     }
 
     /* ============================================================
-       SPEECH
+       SPEECH (Mobile-Optimized with Fallback)
     ============================================================ */
     function speakText(text, overrideLang) {
       if (!text) return;
+      
       const lang = overrideLang || document.getElementById("googleLangSelect").value;
       const speed = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
-      const encodedText = encodeURIComponent(text);
-      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodedText}`;
-      const audio = new Audio(googleTtsUrl);
-      audio.playbackRate = speed;
-      audio.play().catch(error => {
-        window.speechSynthesis.cancel();
+      
+      // 1. Fallback function using the device's built-in TTS
+      const useFallbackTTS = () => {
+        if (!window.speechSynthesis) return;
+        window.speechSynthesis.cancel(); // Clear previous queues
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
         utterance.rate = speed;
         window.speechSynthesis.speak(utterance);
+      };
+
+      // 2. Try Google TTS first
+      const encodedText = encodeURIComponent(text);
+      const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodedText}`;
+      
+      const audio = new Audio(googleTtsUrl);
+      audio.playbackRate = speed;
+      
+      // 3. If Google TTS fails (network blocked or autoplay policy), run fallback
+      audio.play().catch(error => {
+        console.warn("Google TTS failed, using device voice.", error);
+        useFallbackTTS();
       });
     }
+
+    // Unlock audio context on mobile on the first tap
+    document.body.addEventListener('touchstart', function unlockAudio() {
+      if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance('');
+        window.speechSynthesis.speak(u);
+      }
+      document.body.removeEventListener('touchstart', unlockAudio);
+    }, { once: true });
 
     /* ============================================================
        HELPERS
@@ -1988,11 +2017,7 @@
       document.getElementById("wordLabelInput").value = card.label || "";
       document.getElementById("wordAssetPathInput").value = card.customImage ? "" : (card.image || "");
       
-      // Handle legacy POS values from older versions gracefully
       let posVal = card.pos || "pos-noun";
-      if (posVal === "pos-social" && card.id !== 'more' && card.id !== 'enough') {
-         // It's fine to keep it as social
-      }
       document.getElementById("wordPosInput").value = posVal;
       document.getElementById("wordPhotoInput").value = "";
 
@@ -2135,7 +2160,10 @@
 
       sentence.push(card);
       updateSentenceBar();
-      speakCurrent();
+      
+      // REMOVED speakCurrent() here to prevent mobile autoplay blocking. 
+      // The user must tap the "Speak" button inside the popup to hear it clearly,
+      // or they can just hear it via the sentence bar.
     }
 
     function refreshVoiceUI() {
@@ -2168,7 +2196,7 @@
       if (audioRecordings[activeCard.id]) {
         const audio = new Audio(audioRecordings[activeCard.id]);
         audio.playbackRate = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
-        audio.play();
+        audio.play().catch(e => console.warn("Audio play blocked", e));
       } else {
         speakText(activeCard.label);
       }
