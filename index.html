@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universal AAC · Mealtime · Bath · Sleep</title>
+  <title>Universal AAC · Profiles</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400&display=swap');
 
@@ -13,11 +13,15 @@
       --radius-lg: 18px;
       --radius-sm: 12px;
 
-      --pos-noun-bg: #FFEAD2;
-      --pos-verb-bg: #D1F7C4;
-      --pos-adj-bg: #D2E9FF;
-      --pos-social-bg: #FFF3B0;
-      --pos-routine-bg: #EAE0FF;
+      /* UPDATED POS COLORS */
+      --pos-pronoun-bg: #FFF3B0;     /* Yellow */
+      --pos-verb-bg: #D1F7C4;        /* Green */
+      --pos-adj-bg: #D2E9FF;         /* Blue */
+      --pos-adverb-bg: #FFD6E8;      /* Pink */
+      --pos-prep-bg: #FFD8B5;        /* Peach */
+      --pos-question-bg: #FFE4A0;    /* Light Gold */
+      --pos-social-bg: #E0F2FE;      /* Light Cyan */
+      --pos-noun-bg: #FFEAD2;        /* Orange */
 
       --question-bg: #FEF3C7;
       --question-border: #F59E0B;
@@ -358,11 +362,15 @@
       transform: translateY(-2px);
     }
 
-    .pos-noun   { background-color: var(--pos-noun-bg); }
-    .pos-verb   { background-color: var(--pos-verb-bg); }
-    .pos-adj    { background-color: var(--pos-adj-bg); }
-    .pos-social { background-color: var(--pos-social-bg); }
-    .pos-routine{ background-color: var(--pos-routine-bg); }
+    /* UPDATED POS CLASSES */
+    .pos-pronoun  { background-color: var(--pos-pronoun-bg); }
+    .pos-verb     { background-color: var(--pos-verb-bg); }
+    .pos-adj      { background-color: var(--pos-adj-bg); }
+    .pos-adverb   { background-color: var(--pos-adverb-bg); }
+    .pos-prep     { background-color: var(--pos-prep-bg); }
+    .pos-question { background-color: var(--pos-question-bg); }
+    .pos-social   { background-color: var(--pos-social-bg); }
+    .pos-noun     { background-color: var(--pos-noun-bg); }
 
     .aac-card.question-card {
       background-color: var(--question-bg);
@@ -518,6 +526,54 @@
       background: #F3E8FF;
     }
 
+    /* Profile selector */
+    .profile-selector-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #FFFFFF;
+      border-bottom: 1px solid #E2E8F0;
+      flex-wrap: wrap;
+    }
+
+    .profile-label {
+      font-size: 0.85rem;
+      color: #64748B;
+      font-weight: 500;
+    }
+
+    .profile-select {
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #E2E8F0;
+      background: #F8FAFC;
+      font-size: 0.9rem;
+      cursor: pointer;
+      outline: none;
+      min-width: 180px;
+    }
+
+    .profile-select:focus {
+      border-color: #93C5FD;
+    }
+
+    .profile-add-btn {
+      background: #DBEAFE;
+      border: 1px dashed #2563EB;
+      border-radius: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      color: #1D4ED8;
+      font-size: 0.85rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .profile-add-btn:hover {
+      background: #BFDBFE;
+    }
+
     /* Color Legend */
     .color-legend-grid {
       display: grid;
@@ -536,11 +592,15 @@
       box-shadow: 0 2px 4px rgba(0,0,0,0.04);
     }
 
-    .legend-item.pos-noun   { background-color: var(--pos-noun-bg); }
-    .legend-item.pos-verb   { background-color: var(--pos-verb-bg); }
-    .legend-item.pos-adj    { background-color: var(--pos-adj-bg); }
-    .legend-item.pos-social { background-color: var(--pos-social-bg); }
-    .legend-item.pos-routine{ background-color: var(--pos-routine-bg); }
+    /* UPDATED LEGEND CLASSES */
+    .legend-item.pos-pronoun  { background-color: var(--pos-pronoun-bg); }
+    .legend-item.pos-verb     { background-color: var(--pos-verb-bg); }
+    .legend-item.pos-adj      { background-color: var(--pos-adj-bg); }
+    .legend-item.pos-adverb   { background-color: var(--pos-adverb-bg); }
+    .legend-item.pos-prep     { background-color: var(--pos-prep-bg); }
+    .legend-item.pos-question { background-color: var(--pos-question-bg); }
+    .legend-item.pos-social   { background-color: var(--pos-social-bg); }
+    .legend-item.pos-noun     { background-color: var(--pos-noun-bg); }
 
     /* Modal */
     .overlay {
@@ -677,7 +737,6 @@
       box-shadow: 0 2px 0 #b86e06, 0 4px 8px rgba(0,0,0,0.1);
     }
 
-    /* NEW: Upload voice button */
     .btn-upload-voice {
       background: #6366F1;
       color: white;
@@ -876,9 +935,65 @@
       0%, 100% { opacity: 1; }
       50% { opacity: 0.3; }
     }
+
+    /* Profile management modal */
+    .profile-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 16px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .profile-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: #F8FAFC;
+      border-radius: 10px;
+      border: 1px solid #E2E8F0;
+    }
+
+    .profile-item .profile-name {
+      flex: 1;
+      text-align: left;
+      font-size: 0.95rem;
+    }
+
+    .profile-item .profile-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .profile-item .profile-actions button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px 6px;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .profile-item .profile-actions button:hover {
+      background: #E2E8F0;
+    }
+
+    .profile-item .profile-actions .delete-profile-btn:hover {
+      background: #FEE2E2;
+    }
   </style>
 </head>
 <body>
+
+  <!-- Profile Selector Bar -->
+  <div class="profile-selector-bar">
+    <span class="profile-label">👤 Profile:</span>
+    <select class="profile-select" id="profileSelect" onchange="switchProfile(this.value)"></select>
+    <button class="profile-add-btn" onclick="openModal('profileManageOverlay')">⚙️ Manage Profiles</button>
+  </div>
 
   <!-- Top Bar -->
   <div class="message-bar-container">
@@ -917,6 +1032,21 @@
       <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 16h-2v-2h2v2zm1.07-7.75l-.9.92C12.45 11.9 12 12.5 12 14h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H7c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.04-.42 1.99-1.07 2.75z"/></svg>
       <span>Help</span>
     </button>
+  </div>
+
+  <!-- Profile Management Modal -->
+  <div class="overlay" id="profileManageOverlay">
+    <div class="modal">
+      <button class="modal-close-x" onclick="closeModal('profileManageOverlay')" title="Close">✕</button>
+      <h2 style="margin-bottom: 16px;">Manage Profiles 👥</h2>
+      <div class="profile-list" id="profileListContainer"></div>
+      <div class="input-group" style="margin-top: 8px;">
+        <label>New Profile Name:</label>
+        <input type="text" id="newProfileNameInput" placeholder="e.g. Alex, Jamie, Sam" maxlength="40">
+      </div>
+      <button class="btn-speak" onclick="createNewProfile()">➕ Create Profile</button>
+      <button class="btn-close" onclick="closeModal('profileManageOverlay')">Close</button>
+    </div>
   </div>
 
   <!-- Voice Settings Modal -->
@@ -982,6 +1112,10 @@
       <button class="modal-close-x" onclick="closeModal('infoCornerOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;">User Guide 💡</h2>
       <div class="guide-section">
+        <h3>👤 Multiple Profiles</h3>
+        <p>Use the profile dropdown at the top to switch between different users on the same device. Each profile has its own separate word boards, categories, and voice recordings. Tap <b>Manage Profiles</b> to add, rename, or delete profiles.</p>
+      </div>
+      <div class="guide-section">
         <h3>✕ Remove a Word from the Sentence</h3>
         <p>Tap the red <b>✕</b> button on the top-right of any word in the sentence bar to remove it. You can also tap anywhere on the word card to remove it.</p>
       </div>
@@ -991,13 +1125,16 @@
       </div>
       <div class="guide-section">
         <h3>🎨 Auto Grouping by Part of Speech</h3>
-        <p>Words are automatically sorted by part of speech — Nouns first, then Verbs, Adjectives, Social, then Routine.</p>
+        <p>Words are automatically sorted by part of speech as listed below.</p>
         <div class="color-legend-grid">
-          <div class="legend-item pos-noun">🟧 Orange: Noun</div>
-          <div class="legend-item pos-verb">🟩 Green: Verb</div>
-          <div class="legend-item pos-adj">🟦 Blue: Adjective</div>
-          <div class="legend-item pos-social">🟨 Yellow: Social</div>
-          <div class="legend-item pos-routine" style="grid-column: span 2;">🟪 Purple: Routine</div>
+          <div class="legend-item pos-pronoun">🟨 Pronoun / Kata Ganti Nama</div>
+          <div class="legend-item pos-verb">🟩 Verb / Kata Kerja</div>
+          <div class="legend-item pos-adj">🟦 Adjective / Kata Adjektif</div>
+          <div class="legend-item pos-adverb">🩷 Adverb / Kata Adverba</div>
+          <div class="legend-item pos-prep">🍑 Prep & Conj / Kata Sendi</div>
+          <div class="legend-item pos-question">🌟 Question Word / Kata Tanya</div>
+          <div class="legend-item pos-social">💠 Interjection / Kata Seru</div>
+          <div class="legend-item pos-noun">🟧 Noun / Kata Nama</div>
         </div>
       </div>
       <div class="guide-section">
@@ -1042,13 +1179,17 @@
         <input type="text" id="wordIconInput" placeholder="e.g. 🖌️" maxlength="4">
         <label>Word / Phrase Label:</label>
         <input type="text" id="wordLabelInput" placeholder="e.g. Paint Brush">
-        <label>Part of Speech Color:</label>
+        
+        <label>Part of Speech Category:</label>
         <select id="wordPosInput">
-          <option value="pos-noun">Orange - Noun / Object</option>
-          <option value="pos-verb">Green - Verb / Action</option>
-          <option value="pos-adj">Blue - Adjective / Feeling</option>
-          <option value="pos-social">Yellow - Social / Pronoun</option>
-          <option value="pos-routine">Purple - Routine / Place</option>
+          <option value="pos-pronoun">Pronoun (Kata Ganti Nama)</option>
+          <option value="pos-verb">Verb (Kata Kerja)</option>
+          <option value="pos-adj">Adjective (Kata Adjektif)</option>
+          <option value="pos-adverb">Adverb (Kata Adverba)</option>
+          <option value="pos-prep">Preposition & Conjunction (Kata Sendi)</option>
+          <option value="pos-question">Question Word (Kata Tanya)</option>
+          <option value="pos-social">Interjection / Social (Kata Seru)</option>
+          <option value="pos-noun" selected>Noun (Kata Nama)</option>
         </select>
       </div>
       <button class="btn-speak" onclick="saveWordTile()">Save Tile</button>
@@ -1057,188 +1198,225 @@
   </div>
 
   <script>
+    /* ============================================================
+       CONSTANTS
+    ============================================================ */
+    const PROFILES_KEY = 'aac_profiles';
+    const ACTIVE_PROFILE_KEY = 'aac_active_profile';
     const ALL_WORDS_KEY = "__all_words__";
     const ASSETS_FOLDER = "assets/";
+    
+    // UPDATED POS ARRAY based on the provided image order
+    const POS_ORDER = [
+      "pos-pronoun", 
+      "pos-verb", 
+      "pos-adj", 
+      "pos-adverb", 
+      "pos-prep", 
+      "pos-question", 
+      "pos-social", 
+      "pos-noun"
+    ];
 
-    const POS_ORDER = ["pos-noun", "pos-verb", "pos-adj", "pos-social", "pos-routine"];
+    /* ============================================================
+       DEFAULT DATA — single source of truth
+    ============================================================ */
+    function getDefaultCategoriesForNewProfile() {
+      return {
+        mealtime: {
+          name: "🍽️ Mealtime",
+          items: [
+            { id: "i",        label: "I",        icon: "🙋🏻", pos: "pos-pronoun", image: ASSETS_FOLDER + "i.png" },
+            { id: "want",     label: "Want",     icon: "🤲🏻", pos: "pos-verb",   image: ASSETS_FOLDER + "want.png" },
+            { id: "eat",      label: "Eat",      icon: "🍽️", pos: "pos-verb",   image: ASSETS_FOLDER + "eat.png" },
+            { id: "drink",    label: "Drink",    icon: "🥤", pos: "pos-verb",   image: ASSETS_FOLDER + "drink.png" },
+            { id: "hungry",   label: "Hungry",   icon: "🤤", pos: "pos-adj",    image: ASSETS_FOLDER + "hungry.png" },
+            { id: "thirsty",  label: "Thirsty",  icon: "💧", pos: "pos-adj",    image: ASSETS_FOLDER + "thirsty.png" },
+            { id: "more",     label: "More",     icon: "➕", pos: "pos-social", image: ASSETS_FOLDER + "more.png" },
+            { id: "enough",   label: "Enough",   icon: "🚫", pos: "pos-social", image: ASSETS_FOLDER + "enough.png" },
+            { id: "rice",     label: "Rice",     icon: "🍚", pos: "pos-noun",   image: ASSETS_FOLDER + "rice.png" },
+            { id: "noodle",   label: "Mee",      icon: "🍝", pos: "pos-noun",   image: ASSETS_FOLDER + "mee.png" },
+            { id: "chicken",  label: "Chicken",  icon: "🍗", pos: "pos-noun",   image: ASSETS_FOLDER + "chicken.png" },
+            { id: "fish",     label: "Fish",     icon: "🐟", pos: "pos-noun",   image: ASSETS_FOLDER + "fish.png" },
+            { id: "water",    label: "Water",    icon: "💧", pos: "pos-noun",   image: ASSETS_FOLDER + "water.png" },
+            { id: "milk",     label: "Milk",     icon: "🍼", pos: "pos-noun",   image: ASSETS_FOLDER + "milk.png" },
+            { id: "hot",      label: "Hot",      icon: "🔥", pos: "pos-adj",    image: ASSETS_FOLDER + "hot.png" },
+            { id: "cold",     label: "Cold",     icon: "❄️", pos: "pos-adj",    image: ASSETS_FOLDER + "cold.png" },
+            { id: "finish",   label: "Finish",   icon: "🏁", pos: "pos-verb",   image: ASSETS_FOLDER + "finish.png" },
+            { id: "yes",      label: "Yes",      icon: "✅", pos: "pos-verb",   image: ASSETS_FOLDER + "yes.png" },
+            { id: "no",       label: "No",       icon: "❌", pos: "pos-verb",   image: ASSETS_FOLDER + "no.png" },
+            { id: "yummy",    label: "Yummy",    icon: "😋", pos: "pos-adj",    image: ASSETS_FOLDER + "yummy.png" },
+            { id: "not_yummy",label: "Not Yummy",icon: "🤢", pos: "pos-adj",    image: ASSETS_FOLDER + "not_yummy.png" }
+          ],
+          questions: [
+            { en: "Are you hungry / thirsty?", bm: "Kamu lapar / haus?" },
+            { en: "Do you want more?", bm: "Kamu mahu makan lagi?" },
+            { en: "What do you want to eat?", bm: "Kamu mahu makan apa?" },
+            { en: "What do you like to eat?", bm: "Kamu suka makan apa?" },
+            { en: "The food or drink is hot or cold?", bm: "Makanan / Minuman itu panas atau sejuk?" },
+            { en: "The food or drink is yummy or not yummy?", bm: "Makanan / Minuman itu sedap atau tidak sedap?" }
+          ]
+        },
+        bathtime: {
+          name: "🛁 Bath Time",
+          items: [
+            { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-pronoun", image: ASSETS_FOLDER + "i.png" },
+            { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
+            { id: "bath",       label: "Bath",        icon: "🛁", pos: "pos-noun",    image: ASSETS_FOLDER + "bath.png" },
+            { id: "shampoo",    label: "Shampoo",     icon: "🧴", pos: "pos-noun",    image: ASSETS_FOLDER + "shampoo.png" },
+            { id: "towel",      label: "Towel",       icon: "🧻", pos: "pos-noun",    image: ASSETS_FOLDER + "towel.png" },
+            { id: "toothbrush", label: "Toothbrush",  icon: "🪥", pos: "pos-noun",    image: ASSETS_FOLDER + "toothbrush.png" },
+            { id: "toothpaste", label: "Toothpaste",  icon: "🦷", pos: "pos-noun",    image: ASSETS_FOLDER + "toothpaste.png" },
+            { id: "water_bath", label: "Water",       icon: "💧", pos: "pos-noun",    image: ASSETS_FOLDER + "water.png" },
+            { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
+            { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
+            { id: "hot",        label: "Hot",         icon: "🔥", pos: "pos-adj",     image: ASSETS_FOLDER + "hot.png" },
+            { id: "cold",       label: "Cold",        icon: "❄️", pos: "pos-adj",     image: ASSETS_FOLDER + "cold.png" },
+            { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "mummy.png" },
+            { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "daddy.png" },
+            { id: "sister",     label: "Sister",      icon: "👧🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "sister.png" },
+            { id: "brother",    label: "Brother",     icon: "👦🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "brother.png" },
+            { id: "shirt",      label: "Shirt",       icon: "👕", pos: "pos-noun",    image: ASSETS_FOLDER + "shirt.png" },
+            { id: "pant",       label: "Pant",        icon: "👖", pos: "pos-noun",    image: ASSETS_FOLDER + "pant.png" },
+            { id: "skirt",      label: "Skirt",       icon: "👗", pos: "pos-noun",    image: ASSETS_FOLDER + "skirt.png" },
+            { id: "this",       label: "This",        icon: "👇🏻", pos: "pos-pronoun", image: ASSETS_FOLDER + "skirt.png" },
+            { id: "wear",       label: "Wear",        icon: "👕", pos: "pos-verb",    image: ASSETS_FOLDER + "wear.png" },
+            { id: "red",        label: "Red",         icon: "🔴", pos: "pos-adj",     image: ASSETS_FOLDER + "red.png" },
+            { id: "blue",       label: "Blue",        icon: "🔵", pos: "pos-adj",     image: ASSETS_FOLDER + "blue.png" },
+            { id: "white",      label: "White",       icon: "⚪", pos: "pos-adj",     image: ASSETS_FOLDER + "white.png" },
+            { id: "yellow",     label: "Yellow",      icon: "🟡", pos: "pos-adj",     image: ASSETS_FOLDER + "yellow.png" },
+            { id: "green",      label: "Green",       icon: "🟢", pos: "pos-adj",     image: ASSETS_FOLDER + "green.png" },
+            { id: "orange",     label: "Orange",      icon: "🟠", pos: "pos-adj",     image: ASSETS_FOLDER + "orange.png" }
+          ],
+          questions: [
+            { en: "Do you want to take bath?", bm: "Kamu mahu mandi?" },
+            { en: "Do you want who to bath you?", bm: "Siapa yang kamu mahu memandikan kamu?" },
+            { en: "What is this (shampoo / towel / toothbrush / toothpaste)?", bm: "Apa ini (sabun / tuala / berus gigi / ubat gigi)?" },
+            { en: "Is the water hot or cold?", bm: "Air itu panas atau sejuk?" },
+            { en: "Which one do you want to wear first (shirt / pant / skirt)?", bm: "Yang mana satu kamu mahu pakai dahulu (baju / seluar / skirt)?" },
+            { en: "Do you like wearing (shirt / pant / skirt)?", bm: "Adakah anda suka memakai (kemeja / seluar / skirt)?" },
+            { en: "Do you want to wear this (shirt / pant / skirt)?", bm: "Adakah anda mahu memakai (baju / seluar / skirt) ini?" },
+            { en: "What colour is this (shirt / pant / skirt)?", bm: "Apakah warna (baju / seluar / skirt) ini?" }
+          ]
+        },
+        sleeptime: {
+          name: "😴 Sleep Time",
+          items: [
+            { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-pronoun", image: ASSETS_FOLDER + "i.png" },
+            { id: "sleepy",     label: "Sleepy",      icon: "😴", pos: "pos-adj",     image: ASSETS_FOLDER + "sleepy.png" },
+            { id: "light",      label: "Light",       icon: "💡", pos: "pos-verb",    image: ASSETS_FOLDER + "light.png" },
+            { id: "pillow",     label: "Pillow",      icon: "🛏️", pos: "pos-noun",    image: ASSETS_FOLDER + "pillow.png" },
+            { id: "blanket",    label: "Blanket",     icon: "🧣", pos: "pos-noun",    image: ASSETS_FOLDER + "blanket.png" },
+            { id: "doll",       label: "Doll",        icon: "🧸", pos: "pos-noun",    image: ASSETS_FOLDER + "doll.png" },
+            { id: "pee",        label: "Pee",         icon: "🚽", pos: "pos-verb",    image: ASSETS_FOLDER + "pee.png" },
+            { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
+            { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
+            { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
+            { id: "off",        label: "Off",         icon: "📴", pos: "pos-verb",    image: ASSETS_FOLDER + "off.png" },
+            { id: "sleep",      label: "Sleep",       icon: "😴", pos: "pos-verb",    image: ASSETS_FOLDER + "sleep.png" },
+            { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "mummy.png" },
+            { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "daddy.png" }
+          ],
+          questions: [
+            { en: "Are you sleepy?", bm: "Adakah kamu mengantuk?" },
+            { en: "Do you want to switch off the light?", bm: "Adakah kamu mahu tutup lampu?" },
+            { en: "Who do you want to sleep with?", bm: "Dengan siapa anda mahu tidur?" },
+            { en: "Do you want to pee before sleep?", bm: "Adakah anda mahu kencing sebelum tidur?" },
+            { en: "What do you want to bring with you to sleep (pillow / doll / blanket)?", bm: "Apakah yang anda ingin bawa bersama untuk tidur (bantal / anak patung / selimut)?" }
+          ]
+        }
+      };
+    }
 
-    const defaultCategories = {
-      mealtime: {
-        name: "🍽️ Mealtime",
-        items: [
-          { id: "i",        label: "I",        icon: "🙋🏻", pos: "pos-social", image: ASSETS_FOLDER + "i.png" },
-          { id: "want",     label: "Want",     icon: "🤲🏻", pos: "pos-verb",   image: ASSETS_FOLDER + "want.png" },
-          { id: "eat",      label: "Eat",      icon: "🍽️", pos: "pos-verb",   image: ASSETS_FOLDER + "eat.png" },
-          { id: "drink",    label: "Drink",    icon: "🥤", pos: "pos-verb",   image: ASSETS_FOLDER + "drink.png" },
-          { id: "hungry",   label: "Hungry",   icon: "🤤", pos: "pos-adj",    image: ASSETS_FOLDER + "hungry.png" },
-          { id: "thirsty",  label: "Thirsty",  icon: "💧", pos: "pos-adj",    image: ASSETS_FOLDER + "thirsty.png" },
-          { id: "more",     label: "More",     icon: "➕", pos: "pos-social", image: ASSETS_FOLDER + "more.png" },
-          { id: "enough",   label: "Enough",   icon: "🚫", pos: "pos-social", image: ASSETS_FOLDER + "enough.png" },
-          { id: "rice",     label: "Rice",     icon: "🍚", pos: "pos-noun",   image: ASSETS_FOLDER + "rice.png" },
-          { id: "noodle",   label: "Mee",      icon: "🍝", pos: "pos-noun",   image: ASSETS_FOLDER + "mee.png" },
-          { id: "chicken",  label: "Chicken",  icon: "🍗", pos: "pos-noun",   image: ASSETS_FOLDER + "chicken.png" },
-          { id: "fish",     label: "Fish",     icon: "🐟", pos: "pos-noun",   image: ASSETS_FOLDER + "fish.png" },
-          { id: "water",    label: "Water",    icon: "💧", pos: "pos-noun",   image: ASSETS_FOLDER + "water.png" },
-          { id: "milk",     label: "Milk",     icon: "🍼", pos: "pos-noun",   image: ASSETS_FOLDER + "milk.png" },
-          { id: "hot",      label: "Hot",      icon: "🔥", pos: "pos-adj",    image: ASSETS_FOLDER + "hot.png" },
-          { id: "cold",     label: "Cold",     icon: "❄️", pos: "pos-adj",    image: ASSETS_FOLDER + "cold.png" },
-          { id: "finish",   label: "Finish",   icon: "🏁", pos: "pos-verb",   image: ASSETS_FOLDER + "finish.png" },
-          { id: "yes",      label: "Yes",      icon: "✅", pos: "pos-verb",   image: ASSETS_FOLDER + "yes.png" },
-          { id: "no",       label: "No",       icon: "❌", pos: "pos-verb",   image: ASSETS_FOLDER + "no.png" },
-          { id: "yummy",    label: "Yummy",    icon: "😋", pos: "pos-adj",    image: ASSETS_FOLDER + "yummy.png" },
-          { id: "not_yummy",label: "Not Yummy",icon: "🤢", pos: "pos-adj",    image: ASSETS_FOLDER + "not_yummy.png" }
-        ],
-        questions: [
-          { en: "Are you hungry / thirsty?", bm: "Kamu lapar / haus?" },
-          { en: "Do you want more?", bm: "Kamu mahu makan lagi?" },
-          { en: "What do you want to eat?", bm: "Kamu mahu makan apa?" },
-          { en: "What do you like to eat?", bm: "Kamu suka makan apa?" },
-          { en: "The food or drink is hot or cold?", bm: "Makanan / Minuman itu panas atau sejuk?" },
-          { en: "The food or drink is yummy or not yummy?", bm: "Makanan / Minuman itu sedap atau tidak sedap?" }
-        ]
-      },
-      bathtime: {
-        name: "🛁 Bath Time",
-        items: [
-          { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-social",  image: ASSETS_FOLDER + "i.png" },
-          { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
-          { id: "bath",       label: "Bath",        icon: "🛁", pos: "pos-noun",    image: ASSETS_FOLDER + "bath.png" },
-          { id: "shampoo",    label: "Shampoo",     icon: "🧴", pos: "pos-noun",    image: ASSETS_FOLDER + "shampoo.png" },
-          { id: "towel",      label: "Towel",       icon: "🧻", pos: "pos-noun",    image: ASSETS_FOLDER + "towel.png" },
-          { id: "toothbrush", label: "Toothbrush",  icon: "🪥", pos: "pos-noun",    image: ASSETS_FOLDER + "toothbrush.png" },
-          { id: "toothpaste", label: "Toothpaste",  icon: "🦷", pos: "pos-noun",    image: ASSETS_FOLDER + "toothpaste.png" },
-          { id: "water_bath", label: "Water",       icon: "💧", pos: "pos-noun",    image: ASSETS_FOLDER + "water.png" },
-          { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
-          { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
-          { id: "hot",        label: "Hot",         icon: "🔥", pos: "pos-adj",     image: ASSETS_FOLDER + "hot.png" },
-          { id: "cold",       label: "Cold",        icon: "❄️", pos: "pos-adj",     image: ASSETS_FOLDER + "cold.png" },
-          { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-social",  image: ASSETS_FOLDER + "mummy.png" },
-          { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" },
-          { id: "sister",     label: "Sister",      icon: "👧🏻", pos: "pos-social",  image: ASSETS_FOLDER + "sister.png" },
-          { id: "brother",    label: "Brother",     icon: "👦🏻", pos: "pos-social",  image: ASSETS_FOLDER + "brother.png" },
-          { id: "shirt",      label: "Shirt",       icon: "👕", pos: "pos-noun",    image: ASSETS_FOLDER + "shirt.png" },
-          { id: "pant",       label: "Pant",        icon: "👖", pos: "pos-noun",    image: ASSETS_FOLDER + "pant.png" },
-          { id: "skirt",      label: "Skirt",       icon: "👗", pos: "pos-noun",    image: ASSETS_FOLDER + "skirt.png" },
-          { id: "this",       label: "This",        icon: "👇🏻", pos: "pos-noun",    image: ASSETS_FOLDER + "skirt.png" },
-          { id: "wear",       label: "Wear",        icon: "👕", pos: "pos-verb",    image: ASSETS_FOLDER + "wear.png" },
-          { id: "red",        label: "Red",         icon: "🔴", pos: "pos-adj",     image: ASSETS_FOLDER + "red.png" },
-          { id: "blue",       label: "Blue",        icon: "🔵", pos: "pos-adj",     image: ASSETS_FOLDER + "blue.png" },
-          { id: "white",      label: "White",       icon: "⚪", pos: "pos-adj",     image: ASSETS_FOLDER + "white.png" },
-          { id: "yellow",     label: "Yellow",      icon: "🟡", pos: "pos-adj",     image: ASSETS_FOLDER + "yellow.png" },
-          { id: "green",      label: "Green",       icon: "🟢", pos: "pos-adj",     image: ASSETS_FOLDER + "green.png" },
-          { id: "orange",     label: "Orange",      icon: "🟠", pos: "pos-adj",     image: ASSETS_FOLDER + "orange.png" }
-        ],
-        questions: [
-          { en: "Do you want to take bath?", bm: "Kamu mahu mandi?" },
-          { en: "Do you want who to bath you?", bm: "Siapa yang kamu mahu memandikan kamu?" },
-          { en: "What is this (shampoo / towel / toothbrush / toothpaste)?", bm: "Apa ini (sabun / tuala / berus gigi / ubat gigi)?" },
-          { en: "Is the water hot or cold?", bm: "Air itu panas atau sejuk?" },
-          { en: "Which one do you want to wear first (shirt / pant / skirt)?", bm: "Yang mana satu kamu mahu pakai dahulu (baju / seluar / skirt)?" },
-          { en: "Do you like wearing (shirt / pant / skirt)?", bm: "Adakah anda suka memakai (kemeja / seluar / skirt)?" },
-          { en: "Do you want to wear this (shirt / pant / skirt)?", bm: "Adakah anda mahu memakai (baju / seluar / skirt) ini?" },
-          { en: "What colour is this (shirt / pant / skirt)?", bm: "Apakah warna (baju / seluar / skirt) ini?" }
-        ]
-      },
-      sleeptime: {
-        name: "😴 Sleep Time",
-        items: [
-          { id: "i",          label: "I",           icon: "🙋🏻", pos: "pos-social",  image: ASSETS_FOLDER + "i.png" },
-          { id: "sleepy",     label: "Sleepy",      icon: "😴", pos: "pos-adj",     image: ASSETS_FOLDER + "sleepy.png" },
-          { id: "light",      label: "Light",       icon: "💡", pos: "pos-verb",    image: ASSETS_FOLDER + "light.png" },
-          { id: "pillow",     label: "Pillow",      icon: "🛏️", pos: "pos-noun",    image: ASSETS_FOLDER + "pillow.png" },
-          { id: "blanket",    label: "Blanket",     icon: "🧣", pos: "pos-noun",    image: ASSETS_FOLDER + "blanket.png" },
-          { id: "doll",       label: "Doll",        icon: "🧸", pos: "pos-noun",    image: ASSETS_FOLDER + "doll.png" },
-          { id: "pee",        label: "Pee",         icon: "🚽", pos: "pos-verb",    image: ASSETS_FOLDER + "pee.png" },
-          { id: "yes",        label: "Yes",         icon: "✅", pos: "pos-verb",    image: ASSETS_FOLDER + "yes.png" },
-          { id: "no",         label: "No",          icon: "❌", pos: "pos-verb",    image: ASSETS_FOLDER + "no.png" },
-          { id: "want",       label: "Want",        icon: "🤲🏻", pos: "pos-verb",    image: ASSETS_FOLDER + "want.png" },
-          { id: "off",        label: "Off",         icon: "📴", pos: "pos-verb",    image: ASSETS_FOLDER + "off.png" },
-          { id: "sleep",      label: "Sleep",       icon: "😴", pos: "pos-verb",    image: ASSETS_FOLDER + "sleep.png" },
-          { id: "mummy",      label: "Mummy",       icon: "👩🏻", pos: "pos-social",  image: ASSETS_FOLDER + "mummy.png" },
-          { id: "daddy",      label: "Daddy",       icon: "👨🏻", pos: "pos-social",  image: ASSETS_FOLDER + "daddy.png" }
-        ],
-        questions: [
-          { en: "Are you sleepy?", bm: "Adakah kamu mengantuk?" },
-          { en: "Do you want to switch off the light?", bm: "Adakah kamu mahu tutup lampu?" },
-          { en: "Who do you want to sleep with?", bm: "Dengan siapa anda mahu tidur?" },
-          { en: "Do you want to pee before sleep?", bm: "Adakah anda mahu kencing sebelum tidur?" },
-          { en: "What do you want to bring with you to sleep (pillow / doll / blanket)?", bm: "Apakah yang anda ingin bawa bersama untuk tidur (bantal / anak patung / selimut)?" }
-        ]
+    /* ============================================================
+       PROFILE LOADING — with merge-with-defaults repair
+    ============================================================ */
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function mergeCategoriesWithDefaults(savedCategories) {
+      const defaults = getDefaultCategoriesForNewProfile();
+      const merged = savedCategories && typeof savedCategories === 'object'
+        ? deepClone(savedCategories)
+        : {};
+
+      Object.keys(defaults).forEach(key => {
+        if (!merged[key]) {
+          merged[key] = deepClone(defaults[key]);
+          return;
+        }
+        const cat = merged[key];
+        if (!Array.isArray(cat.items)) cat.items = [];
+
+        const existingIds = new Set(cat.items.map(i => i.id));
+        defaults[key].items.forEach(dItem => {
+          if (!existingIds.has(dItem.id)) {
+            cat.items.push(deepClone(dItem));
+          }
+        });
+
+        if (defaults[key].questions && (!Array.isArray(cat.questions) || cat.questions.length === 0)) {
+          cat.questions = deepClone(defaults[key].questions);
+        }
+      });
+
+      return merged;
+    }
+
+    function loadProfiles() {
+      let saved = {};
+      try {
+        const raw = localStorage.getItem(PROFILES_KEY);
+        saved = raw ? JSON.parse(raw) : {};
+      } catch (e) {
+        console.warn("Could not parse saved profiles, resetting to defaults.", e);
+        saved = {};
       }
-    };
 
-    /* ----------------------------------------------------------------
-       LOAD + MERGE + CLEANUP
-    ---------------------------------------------------------------- */
+      if (!saved || typeof saved !== 'object' || Object.keys(saved).length === 0) {
+        return {
+          default: {
+            name: "Default User",
+            categories: getDefaultCategoriesForNewProfile(),
+            audioRecordings: {}
+          }
+        };
+      }
+
+      Object.keys(saved).forEach(pid => {
+        const p = saved[pid] || {};
+        p.name = p.name || "User";
+        p.categories = mergeCategoriesWithDefaults(p.categories);
+        p.audioRecordings = p.audioRecordings || {};
+        saved[pid] = p;
+      });
+
+      return saved;
+    }
+
+    /* ============================================================
+       STATE
+    ============================================================ */
+    let profiles = loadProfiles();
+    let activeProfileId = localStorage.getItem(ACTIVE_PROFILE_KEY) || Object.keys(profiles)[0];
+    if (!profiles[activeProfileId]) {
+      activeProfileId = Object.keys(profiles)[0];
+    }
+
     let categories = {};
-    try {
-      categories = JSON.parse(localStorage.getItem('aac_categories')) || {};
-    } catch (e) {
-      categories = {};
-    }
+    let audioRecordings = {};
 
-    Object.keys(categories).forEach(key => {
-      if (!defaultCategories[key] && !key.startsWith('cat_')) {
-        delete categories[key];
-      }
-    });
-
-    Object.keys(defaultCategories).forEach(key => {
-      if (!categories[key]) {
-        categories[key] = JSON.parse(JSON.stringify(defaultCategories[key]));
-      } else {
-        if (!Array.isArray(categories[key].items)) {
-          categories[key].items = [];
-        }
-        const defaultItems = defaultCategories[key].items;
-
-        categories[key].items = categories[key].items.map(item => {
-          const match = defaultItems.find(d => d.id === item.id);
-          if (match && !item.image && !item.customImage) {
-            return { ...item, image: match.image, icon: item.icon || match.icon };
-          }
-          return item;
-        });
-
-        defaultItems.forEach(dItem => {
-          if (!categories[key].items.find(i => i.id === dItem.id)) {
-            categories[key].items.push(JSON.parse(JSON.stringify(dItem)));
-          }
-        });
-
-        const defaultIds = new Set(defaultItems.map(d => d.id));
-        categories[key].items = categories[key].items.filter(item => {
-          if (typeof item.id === 'string' && item.id.startsWith('word_')) return true;
-          return defaultIds.has(item.id);
-        });
-
-        if (defaultCategories[key].questions) {
-          const saved = categories[key].questions;
-          if (!saved || (saved.length > 0 && typeof saved[0] === 'string')) {
-            categories[key].questions = JSON.parse(JSON.stringify(defaultCategories[key].questions));
-          }
-        }
-      }
-    });
-
-    if (Object.keys(categories).length === 0) {
-      categories = JSON.parse(JSON.stringify(defaultCategories));
-    }
-
-    localStorage.setItem('aac_categories', JSON.stringify(categories));
-
-    let activeCategory = Object.keys(categories)[0] || "mealtime";
+    let activeCategory = null;
     let isEditMode = false;
     let editingTileId = null;
     let editingCategoryKey = null;
-
     let showQuestionsInGrid = false;
     let questionLang = localStorage.getItem('aac_question_lang') || 'en';
 
     let activeCard = null;
     let sentence = [];
 
-    let audioRecordings = JSON.parse(localStorage.getItem('aac_recordings')) || {};
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
@@ -1253,7 +1431,152 @@
     let recordedSampleRate = 44100;
     let scriptProcessor = null;
 
-    /* ---------- SPEECH ---------- */
+    /* ============================================================
+       PERSISTENCE
+    ============================================================ */
+    function saveProfilesToStorage() {
+      localStorage.setItem(PROFILES_KEY, JSON.stringify(profiles));
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+    }
+
+    function saveData() {
+      if (profiles[activeProfileId]) {
+        profiles[activeProfileId].categories = categories;
+        profiles[activeProfileId].audioRecordings = audioRecordings;
+      }
+      saveProfilesToStorage();
+    }
+
+    /* ============================================================
+       PROFILE LOAD / SWITCH
+    ============================================================ */
+    function loadProfileData(profileId) {
+      const profile = profiles[profileId];
+      if (!profile) return;
+
+      categories = mergeCategoriesWithDefaults(profile.categories);
+      audioRecordings = deepClone(profile.audioRecordings || {});
+
+      activeCategory = Object.keys(categories)[0] || "mealtime";
+      isEditMode = false;
+      editingTileId = null;
+      editingCategoryKey = null;
+      showQuestionsInGrid = false;
+      sentence = [];
+      activeCard = null;
+
+      document.getElementById("editToggleBtn").classList.remove("active");
+      document.body.classList.remove("edit-active");
+
+      profiles[profileId].categories = categories;
+      profiles[profileId].audioRecordings = audioRecordings;
+      saveProfilesToStorage();
+
+      renderProfileSelector();
+      renderTabs();
+      renderGrid();
+      updateSentenceBar();
+    }
+
+    function renderProfileSelector() {
+      const select = document.getElementById("profileSelect");
+      select.innerHTML = "";
+      Object.keys(profiles).forEach(id => {
+        const opt = document.createElement("option");
+        opt.value = id;
+        opt.textContent = profiles[id].name;
+        if (id === activeProfileId) opt.selected = true;
+        select.appendChild(opt);
+      });
+    }
+
+    function switchProfile(profileId) {
+      if (profileId === activeProfileId) return;
+      if (!profiles[profileId]) return;
+
+      saveData();
+
+      activeProfileId = profileId;
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+      loadProfileData(activeProfileId);
+    }
+
+    function renderProfileManageList() {
+      const container = document.getElementById("profileListContainer");
+      container.innerHTML = "";
+
+      Object.keys(profiles).forEach(id => {
+        const item = document.createElement("div");
+        item.className = "profile-item";
+        const isActive = id === activeProfileId;
+        item.innerHTML = `
+          <span class="profile-name">${profiles[id].name} ${isActive ? '✅' : ''}</span>
+          <div class="profile-actions">
+            <button onclick="renameProfile('${id}')" title="Rename">✏️</button>
+            <button class="delete-profile-btn" onclick="deleteProfile('${id}')" title="Delete" ${Object.keys(profiles).length <= 1 ? 'disabled style="opacity:0.4;cursor:not-allowed;"' : ''}>🗑️</button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function createNewProfile() {
+      const input = document.getElementById("newProfileNameInput");
+      const name = input.value.trim();
+      if (!name) return alert("Please enter a profile name.");
+
+      const newId = "profile_" + Date.now();
+      profiles[newId] = {
+        name: name,
+        categories: getDefaultCategoriesForNewProfile(),
+        audioRecordings: {}
+      };
+      saveProfilesToStorage();
+      input.value = "";
+      renderProfileManageList();
+      renderProfileSelector();
+
+      activeProfileId = newId;
+      localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+      loadProfileData(activeProfileId);
+    }
+
+    function renameProfile(profileId) {
+      const currentName = profiles[profileId].name;
+      const newName = prompt("Enter new profile name:", currentName);
+      if (newName === null) return;
+      const trimmed = newName.trim();
+      if (!trimmed) return alert("Name cannot be empty.");
+      profiles[profileId].name = trimmed;
+      saveProfilesToStorage();
+      renderProfileManageList();
+      renderProfileSelector();
+    }
+
+    function deleteProfile(profileId) {
+      if (Object.keys(profiles).length <= 1) {
+        alert("Cannot delete the only profile. Create another profile first.");
+        return;
+      }
+      const name = profiles[profileId].name;
+      if (!confirm(`Delete profile "${name}" and all its data? This cannot be undone.`)) return;
+
+      delete profiles[profileId];
+      saveProfilesToStorage();
+
+      if (activeProfileId === profileId) {
+        activeProfileId = Object.keys(profiles)[0];
+        localStorage.setItem(ACTIVE_PROFILE_KEY, activeProfileId);
+        loadProfileData(activeProfileId);
+      }
+
+      renderProfileManageList();
+      renderProfileSelector();
+    }
+
+    /* ============================================================
+       SPEECH
+    ============================================================ */
     function speakText(text, overrideLang) {
       if (!text) return;
       const lang = overrideLang || document.getElementById("googleLangSelect").value;
@@ -1271,11 +1594,9 @@
       });
     }
 
-    function saveData() {
-      localStorage.setItem('aac_categories', JSON.stringify(categories));
-      localStorage.setItem('aac_recordings', JSON.stringify(audioRecordings));
-    }
-
+    /* ============================================================
+       HELPERS
+    ============================================================ */
     function getAllWords() {
       const all = [];
       Object.keys(categories).forEach(catKey => {
@@ -1301,7 +1622,9 @@
       return result;
     }
 
-    /* ---------- EDIT MODE ---------- */
+    /* ============================================================
+       EDIT MODE
+    ============================================================ */
     function toggleEditMode() {
       isEditMode = !isEditMode;
       const btn = document.getElementById("editToggleBtn");
@@ -1311,7 +1634,9 @@
       renderGrid();
     }
 
-    /* ---------- TABS ---------- */
+    /* ============================================================
+       TABS
+    ============================================================ */
     function renderTabs() {
       const tabsNav = document.getElementById("categoryTabs");
       tabsNav.innerHTML = "";
@@ -1400,7 +1725,9 @@
       }
     }
 
-    /* ---------- GRID ---------- */
+    /* ============================================================
+       GRID
+    ============================================================ */
     function renderGrid() {
       const grid = document.getElementById("grid");
       grid.innerHTML = "";
@@ -1454,7 +1781,9 @@
       });
     }
 
-    /* ---------- QUESTIONS INSIDE GRID ---------- */
+    /* ============================================================
+       QUESTIONS INSIDE GRID
+    ============================================================ */
     function renderQuestionsInGrid(grid, questions) {
       const header = document.createElement("div");
       header.className = "question-header";
@@ -1523,7 +1852,9 @@
       });
     }
 
-    /* ---------- TILE BUILDER ---------- */
+    /* ============================================================
+       TILE BUILDER
+    ============================================================ */
     function buildTileElement(card) {
       const cardEl = document.createElement("div");
       cardEl.className = `aac-card ${card.pos || 'pos-noun'}`;
@@ -1556,7 +1887,9 @@
       return cardEl;
     }
 
-    /* ---------- CATEGORY EDITING ---------- */
+    /* ============================================================
+       CATEGORY EDITING
+    ============================================================ */
     function openAddCategoryModal() {
       editingCategoryKey = null;
       document.getElementById("addCategoryTitle").innerText = "Add Routine Category";
@@ -1627,7 +1960,9 @@
       renderGrid();
     }
 
-    /* ---------- WORD EDITING ---------- */
+    /* ============================================================
+       WORD EDITING
+    ============================================================ */
     function openAddWordModal(preselectedPos) {
       editingTileId = null;
       document.getElementById("wordModalTitle").innerText = "Add New Word Tile";
@@ -1652,7 +1987,13 @@
       document.getElementById("wordIconInput").value = card.icon || "";
       document.getElementById("wordLabelInput").value = card.label || "";
       document.getElementById("wordAssetPathInput").value = card.customImage ? "" : (card.image || "");
-      document.getElementById("wordPosInput").value = card.pos || "pos-noun";
+      
+      // Handle legacy POS values from older versions gracefully
+      let posVal = card.pos || "pos-noun";
+      if (posVal === "pos-social" && card.id !== 'more' && card.id !== 'enough') {
+         // It's fine to keep it as social
+      }
+      document.getElementById("wordPosInput").value = posVal;
       document.getElementById("wordPhotoInput").value = "";
 
       const previewBox = document.getElementById("existingImagePreview");
@@ -1770,7 +2111,9 @@
       renderGrid();
     }
 
-    /* ---------- POPUP / SENTENCE ---------- */
+    /* ============================================================
+       POPUP / SENTENCE
+    ============================================================ */
     function openPopup(card) {
       activeCard = card;
       const modalGraphic = document.getElementById("modalGraphic");
@@ -1786,7 +2129,6 @@
 
       document.getElementById("modalTitle").innerText = card.label;
 
-      // Update the voice status banner + remove-voice visibility
       refreshVoiceUI();
 
       document.getElementById("popupOverlay").classList.add("active");
@@ -1832,7 +2174,9 @@
       }
     }
 
-    /* ---------- REMOVE VOICE ---------- */
+    /* ============================================================
+       REMOVE VOICE
+    ============================================================ */
     function removeVoice() {
       if (!activeCard) return;
       if (!audioRecordings[activeCard.id]) return;
@@ -1845,15 +2189,15 @@
       alert("Custom voice removed.");
     }
 
-    /* ---------- UPLOAD VOICE FILE ---------- */
+    /* ============================================================
+       UPLOAD VOICE FILE
+    ============================================================ */
     function handleVoiceUpload(event) {
       const file = event.target.files[0];
       if (!file) return;
       if (!activeCard) return;
 
-      // Optional size guard — localStorage typically allows ~5–10 MB total.
-      // Keep individual files reasonable.
-      const MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+      const MAX_BYTES = 2 * 1024 * 1024;
       if (file.size > MAX_BYTES) {
         if (!confirm(`This file is ${(file.size / 1024 / 1024).toFixed(2)} MB. Large files may exceed localStorage limits. Continue?`)) {
           event.target.value = "";
@@ -1866,7 +2210,6 @@
         audioRecordings[activeCard.id] = e.target.result;
         saveData();
         refreshVoiceUI();
-        // Play a short preview
         const preview = new Audio(e.target.result);
         preview.playbackRate = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
         preview.play().catch(() => {});
@@ -1877,11 +2220,12 @@
       };
       reader.readAsDataURL(file);
 
-      // Reset so picking the same file twice triggers onchange again
       event.target.value = "";
     }
 
-    /* ---------- RECORDING ---------- */
+    /* ============================================================
+       RECORDING
+    ============================================================ */
     async function toggleRecord() {
       const recordBtn = document.getElementById("recordBtn");
       const indicator = document.getElementById("recordingIndicator");
@@ -1972,7 +2316,9 @@
       }
     }
 
-    /* ---------- BUILD TRIMMED WAV ---------- */
+    /* ============================================================
+       BUILD TRIMMED WAV
+    ============================================================ */
     function buildTrimmedWavFromSamples(chunks, sampleRate) {
       let totalLength = 0;
       chunks.forEach(c => totalLength += c.length);
@@ -2054,7 +2400,9 @@
       recordedSamples = [];
     }
 
-    /* ---------- SENTENCE BAR ---------- */
+    /* ============================================================
+       SENTENCE BAR
+    ============================================================ */
     function updateSentenceBar() {
       const bar = document.getElementById("messageBar");
       bar.innerHTML = "";
@@ -2216,9 +2564,33 @@
       }
     }
 
-    // Initialize
-    renderTabs();
-    renderGrid();
+    /* ============================================================
+       MODAL HOOK — refresh profile list when the modal opens
+    ============================================================ */
+    const _originalOpenModal = openModal;
+    openModal = function(id) {
+      _originalOpenModal(id);
+      if (id === 'profileManageOverlay') {
+        renderProfileManageList();
+      }
+    };
+
+    /* ============================================================
+       INITIAL BOOT
+    ============================================================ */
+    (function boot() {
+      if (!profiles[activeProfileId]) {
+        activeProfileId = Object.keys(profiles)[0];
+      }
+
+      Object.keys(profiles).forEach(pid => {
+        profiles[pid].categories = mergeCategoriesWithDefaults(profiles[pid].categories);
+        profiles[pid].audioRecordings = profiles[pid].audioRecordings || {};
+      });
+      saveProfilesToStorage();
+
+      loadProfileData(activeProfileId);
+    })();
   </script>
 </body>
 </html>
