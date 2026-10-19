@@ -32,7 +32,7 @@
       padding: 0;
       font-family: 'Fredoka', -apple-system, BlinkMacSystemFont, sans-serif;
       font-weight: 400 !important;
-      -webkit-tap-highlight-color: transparent; /* Removes blue highlight on mobile tap */
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -41,9 +41,9 @@
       display: flex;
       flex-direction: column;
       height: 100vh;
-      height: 100dvh; /* Better height for mobile keyboards/bars */
+      height: 100dvh;
       overflow: hidden;
-      user-select: none; /* Prevents accidental text selection on mobile */
+      user-select: none;
     }
 
     /* Top Bar */
@@ -332,7 +332,7 @@
       overflow-y: auto;
       background: #FFFFFF;
       align-content: start;
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+      -webkit-overflow-scrolling: touch;
     }
 
     /* 3D Tile */
@@ -496,7 +496,7 @@
       background: #FFFFFF;
       box-shadow: 0 -2px 8px rgba(0,0,0,0.03);
       padding: 10px 16px;
-      padding-bottom: max(10px, env(safe-area-inset-bottom)); /* iOS safe area */
+      padding-bottom: max(10px, env(safe-area-inset-bottom));
       gap: 12px;
     }
 
@@ -1221,6 +1221,36 @@
     ];
 
     /* ============================================================
+       AUDIO UNLOCKER (Prevents mobile browsers from blocking audio)
+    ============================================================ */
+    let isAudioUnlocked = false;
+    function unlockMobileAudio() {
+      if (isAudioUnlocked) return;
+      
+      // Create a tiny silent WAV file in base64
+      const silentWav = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+      const audio = new Audio(silentWav);
+      
+      // Play it silently to unlock the browser's audio channel
+      audio.play().then(() => {
+        isAudioUnlocked = true;
+        console.log("Mobile audio unlocked successfully.");
+      }).catch(e => {
+        console.log("Audio unlock failed, waiting for user interaction.");
+      });
+
+      // Also unlock Web Speech Synthesis
+      if (window.speechSynthesis) {
+        const u = new SpeechSynthesisUtterance('');
+        window.speechSynthesis.speak(u);
+      }
+    }
+    // Call unlock on the very first interaction anywhere
+    document.body.addEventListener('touchstart', unlockMobileAudio, { once: true });
+    document.body.addEventListener('click', unlockMobileAudio, { once: true });
+
+
+    /* ============================================================
        DEFAULT DATA
     ============================================================ */
     function getDefaultCategoriesForNewProfile() {
@@ -1433,11 +1463,6 @@
     let recordedSampleRate = 44100;
     let scriptProcessor = null;
 
-    // Pre-load the speech synthesis voices (Helps Safari/iOS load voices)
-    if (window.speechSynthesis) {
-      window.speechSynthesis.getVoices();
-    }
-
     /* ============================================================
        PERSISTENCE
     ============================================================ */
@@ -1590,38 +1615,26 @@
       const lang = overrideLang || document.getElementById("googleLangSelect").value;
       const speed = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
       
-      // 1. Fallback function using the device's built-in TTS
       const useFallbackTTS = () => {
         if (!window.speechSynthesis) return;
-        window.speechSynthesis.cancel(); // Clear previous queues
+        window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
         utterance.rate = speed;
         window.speechSynthesis.speak(utterance);
       };
 
-      // 2. Try Google TTS first
       const encodedText = encodeURIComponent(text);
       const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodedText}`;
       
       const audio = new Audio(googleTtsUrl);
       audio.playbackRate = speed;
       
-      // 3. If Google TTS fails (network blocked or autoplay policy), run fallback
       audio.play().catch(error => {
         console.warn("Google TTS failed, using device voice.", error);
         useFallbackTTS();
       });
     }
-
-    // Unlock audio context on mobile on the first tap
-    document.body.addEventListener('touchstart', function unlockAudio() {
-      if (window.speechSynthesis) {
-        const u = new SpeechSynthesisUtterance('');
-        window.speechSynthesis.speak(u);
-      }
-      document.body.removeEventListener('touchstart', unlockAudio);
-    }, { once: true });
 
     /* ============================================================
        HELPERS
@@ -1910,7 +1923,19 @@
       `;
 
       cardEl.onclick = () => {
-        if (!isEditMode) openPopup(card);
+        if (!isEditMode) {
+          // 1. Speak the word immediately (Audio is unlocked via body click listener)
+          if (audioRecordings[card.id]) {
+            const audio = new Audio(audioRecordings[card.id]);
+            audio.playbackRate = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
+            audio.play().catch(e => console.warn(e));
+          } else {
+            speakText(card.label);
+          }
+          
+          // 2. Open the popup for visual confirmation / advanced options
+          openPopup(card);
+        }
       };
 
       return cardEl;
@@ -2161,9 +2186,8 @@
       sentence.push(card);
       updateSentenceBar();
       
-      // REMOVED speakCurrent() here to prevent mobile autoplay blocking. 
-      // The user must tap the "Speak" button inside the popup to hear it clearly,
-      // or they can just hear it via the sentence bar.
+      // We removed speakCurrent() here because the click on the tile already triggered the sound.
+      // This prevents double-firing the sound.
     }
 
     function refreshVoiceUI() {
