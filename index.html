@@ -109,6 +109,7 @@
     .inline-btn.btn-clear:active { transform: scale(0.95); }
 
     .message-card {
+      position: relative;
       width: 68px;
       height: 68px;
       min-width: 68px;
@@ -149,6 +150,37 @@
       line-height: 1;
       word-break: break-word;
       color: var(--text-main);
+    }
+
+    .message-card .msg-close-btn {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #EF4444;
+      color: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      font-size: 0.7rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      z-index: 3;
+      padding: 0;
+      transition: transform 0.1s ease, background 0.1s ease;
+    }
+
+    .message-card .msg-close-btn:hover {
+      background: #DC2626;
+      transform: scale(1.15);
+    }
+
+    .message-card .msg-close-btn:active {
+      transform: scale(0.9);
     }
 
     /* Category Tabs */
@@ -529,6 +561,7 @@
     .overlay.active { opacity: 1; pointer-events: auto; }
 
     .modal {
+      position: relative;
       background: #FFFFFF;
       border-radius: 24px;
       padding: 24px;
@@ -544,11 +577,43 @@
 
     .overlay.active .modal { transform: scale(1); }
 
+    .modal-close-x {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #F1F5F9;
+      color: #475569;
+      border: none;
+      font-size: 1rem;
+      line-height: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, transform 0.1s ease, color 0.15s ease;
+      z-index: 5;
+      padding: 0;
+    }
+
+    .modal-close-x:hover {
+      background: #EF4444;
+      color: #FFFFFF;
+      transform: scale(1.1);
+    }
+
+    .modal-close-x:active {
+      transform: scale(0.9);
+    }
+
     .modal-graphic {
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 16px;
+      margin-top: 8px;
     }
 
     .modal-graphic img {
@@ -610,6 +675,71 @@
     .btn-record:active {
       transform: translateY(1px);
       box-shadow: 0 2px 0 #b86e06, 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* NEW: Upload voice button */
+    .btn-upload-voice {
+      background: #6366F1;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 0 #4338CA, 0 6px 10px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-upload-voice:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 0 #4338CA, 0 10px 16px rgba(0,0,0,0.1);
+    }
+
+    .btn-upload-voice:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 #4338CA, 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn-remove-voice {
+      background: #FEE2E2;
+      color: #B91C1C;
+      border: 1px solid #FCA5A5;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .btn-remove-voice:hover {
+      background: #FECACA;
+    }
+
+    .voice-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: #059669;
+      background: #ECFDF5;
+      border: 1px solid #A7F3D0;
+      border-radius: 10px;
+      padding: 8px 12px;
+      margin-bottom: 4px;
+    }
+
+    .voice-status .icon {
+      font-size: 1rem;
     }
 
     .btn-close {
@@ -721,6 +851,31 @@
     .question-lang-toggle button:hover:not(.active) {
       background: rgba(245, 158, 11, 0.2);
     }
+
+    /* Recording indicator */
+    .recording-indicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 6px;
+      color: #EF4444;
+      font-size: 0.85rem;
+    }
+    .recording-indicator.active { display: flex; }
+
+    .recording-indicator .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #EF4444;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
   </style>
 </head>
 <body>
@@ -767,6 +922,7 @@
   <!-- Voice Settings Modal -->
   <div class="overlay" id="settingsOverlay">
     <div class="modal">
+      <button class="modal-close-x" onclick="closeModal('settingsOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 20px;">Voice Settings 🌐</h2>
       <div class="input-group">
         <label>Language:</label>
@@ -791,12 +947,31 @@
   <!-- AAC Card Pop-Up Modal -->
   <div class="overlay" id="popupOverlay">
     <div class="modal">
+      <button class="modal-close-x" onclick="closePopup()" title="Close">✕</button>
       <div class="modal-graphic" id="modalGraphic"></div>
       <h2 class="modal-title" id="modalTitle">Label</h2>
+
+      <!-- Voice status banner (shown when a custom voice exists) -->
+      <div class="voice-status" id="voiceStatusBanner" style="display: none;">
+        <span class="icon">🎙️</span>
+        <span id="voiceStatusText">Custom voice saved</span>
+      </div>
+
       <div class="audio-controls">
         <button class="btn-speak" onclick="speakCurrent()">🔊 Speak</button>
         <button class="btn-record" id="recordBtn" onclick="toggleRecord()">🎙️ Record Custom Voice</button>
-        <button class="btn-close" onclick="closePopup()">Close</button>
+        <button class="btn-upload-voice" onclick="document.getElementById('voiceFileInput').click()">
+          <span>📁</span> Upload Voice File
+        </button>
+        <input type="file" id="voiceFileInput" accept="audio/*" style="display: none;" onchange="handleVoiceUpload(event)">
+        <button class="btn-remove-voice" id="removeVoiceBtn" onclick="removeVoice()" style="display: none;">
+          <span>🗑️</span> Remove Saved Voice
+        </button>
+
+        <div class="recording-indicator" id="recordingIndicator">
+          <div class="dot"></div>
+          <span>Recording — background noise suppressed, silence trimmed</span>
+        </div>
       </div>
     </div>
   </div>
@@ -804,7 +979,12 @@
   <!-- Help & Guide Modal -->
   <div class="overlay" id="infoCornerOverlay">
     <div class="modal">
+      <button class="modal-close-x" onclick="closeModal('infoCornerOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;">User Guide 💡</h2>
+      <div class="guide-section">
+        <h3>✕ Remove a Word from the Sentence</h3>
+        <p>Tap the red <b>✕</b> button on the top-right of any word in the sentence bar to remove it. You can also tap anywhere on the word card to remove it.</p>
+      </div>
       <div class="guide-section">
         <h3>➕ Add Routine</h3>
         <p>Tap <b>Edit</b> at the bottom to enter edit mode. A blue <b>➕ Add Routine</b> button appears at the end of the tab row. Tap it to add a new routine category. Use the ✏️ and ✕ badges on any tab to edit or delete it.</p>
@@ -821,12 +1001,8 @@
         </div>
       </div>
       <div class="guide-section">
-        <h3>❓ Question Button & Language Toggle</h3>
-        <p>Tap the small <b>❓</b> button next to a category name to show its question list. Use the <b>EN / BM</b> toggle in the question header to switch languages.</p>
-      </div>
-      <div class="guide-section">
-        <h3>🎙️ Custom Voice</h3>
-        <p>Record your own voice for any tile. When you play a sentence, the app will use your recorded voice for those tiles automatically.</p>
+        <h3>🎙️ Custom Voice — Record or Upload</h3>
+        <p>For each word, you can either <b>record</b> your own voice (with noise suppression and automatic leading-silence trimming) or <b>upload</b> an existing audio file (.mp3, .wav, .ogg, .m4a, .webm). Once a custom voice exists, it replaces the default TTS during playback.</p>
       </div>
       <button class="btn-speak" onclick="closeModal('infoCornerOverlay')">Got It!</button>
     </div>
@@ -835,6 +1011,7 @@
   <!-- Add Category Modal -->
   <div class="overlay" id="addCategoryOverlay">
     <div class="modal">
+      <button class="modal-close-x" onclick="closeModal('addCategoryOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;" id="addCategoryTitle">Add Routine Category</h2>
       <div class="input-group">
         <label>Category Emoji Icon (optional):</label>
@@ -850,6 +1027,7 @@
   <!-- Add or Edit Word Tile Modal -->
   <div class="overlay" id="addWordOverlay">
     <div class="modal">
+      <button class="modal-close-x" onclick="closeModal('addWordOverlay')" title="Close">✕</button>
       <h2 style="margin-bottom: 16px;" id="wordModalTitle">Add New Word Tile</h2>
       <div class="input-group">
         <label>Option 1: Upload Photo (stored in localStorage)</label>
@@ -990,7 +1168,7 @@
     };
 
     /* ----------------------------------------------------------------
-       LOAD + MERGE + CLEANUP STRATEGY
+       LOAD + MERGE + CLEANUP
     ---------------------------------------------------------------- */
     let categories = {};
     try {
@@ -999,15 +1177,12 @@
       categories = {};
     }
 
-    // Remove categories no longer in defaults — BUT keep user-created categories
-    // (ids starting with "cat_") that the user added via ➕ Add Routine.
     Object.keys(categories).forEach(key => {
       if (!defaultCategories[key] && !key.startsWith('cat_')) {
         delete categories[key];
       }
     });
 
-    // Merge in / upgrade remaining default categories
     Object.keys(defaultCategories).forEach(key => {
       if (!categories[key]) {
         categories[key] = JSON.parse(JSON.stringify(defaultCategories[key]));
@@ -1015,7 +1190,6 @@
         if (!Array.isArray(categories[key].items)) {
           categories[key].items = [];
         }
-
         const defaultItems = defaultCategories[key].items;
 
         categories[key].items = categories[key].items.map(item => {
@@ -1068,6 +1242,16 @@
     let mediaRecorder = null;
     let audioChunks = [];
     let isRecording = false;
+
+    let audioContext = null;
+    let sourceNode = null;
+    let gainNode = null;
+    let highpassNode = null;
+    let mediaStream = null;
+
+    let recordedSamples = [];
+    let recordedSampleRate = 44100;
+    let scriptProcessor = null;
 
     /* ---------- SPEECH ---------- */
     function speakText(text, overrideLang) {
@@ -1206,7 +1390,6 @@
         tabsNav.appendChild(wrapper);
       });
 
-      // ➕ Add Routine button (always visible in Edit mode)
       if (isEditMode) {
         const addBtn = document.createElement("button");
         addBtn.className = "add-tab-btn";
@@ -1380,7 +1563,6 @@
       document.getElementById("catIconInput").value = "";
       document.getElementById("catNameInput").value = "";
       openModal("addCategoryOverlay");
-      // Focus on name field after a beat
       setTimeout(() => document.getElementById("catNameInput").focus(), 250);
     }
 
@@ -1405,7 +1587,6 @@
       if (!name) return alert("Please enter a routine category name.");
 
       if (editingCategoryKey) {
-        // Editing existing category
         categories[editingCategoryKey].name = `${icon} ${name}`;
         saveData();
         closeModal("addCategoryOverlay");
@@ -1413,7 +1594,6 @@
         renderTabs();
         renderGrid();
       } else {
-        // Creating new category
         const newKey = "cat_" + Date.now();
         categories[newKey] = {
           name: `${icon} ${name}`,
@@ -1605,11 +1785,31 @@
       }
 
       document.getElementById("modalTitle").innerText = card.label;
+
+      // Update the voice status banner + remove-voice visibility
+      refreshVoiceUI();
+
       document.getElementById("popupOverlay").classList.add("active");
 
       sentence.push(card);
       updateSentenceBar();
       speakCurrent();
+    }
+
+    function refreshVoiceUI() {
+      const hasVoice = activeCard && !!audioRecordings[activeCard.id];
+      const banner = document.getElementById("voiceStatusBanner");
+      const removeBtn = document.getElementById("removeVoiceBtn");
+      const text = document.getElementById("voiceStatusText");
+
+      if (hasVoice) {
+        banner.style.display = "flex";
+        removeBtn.style.display = "flex";
+        if (text) text.innerText = "Custom voice saved for this word";
+      } else {
+        banner.style.display = "none";
+        removeBtn.style.display = "none";
+      }
     }
 
     function closePopup() {
@@ -1632,42 +1832,229 @@
       }
     }
 
+    /* ---------- REMOVE VOICE ---------- */
+    function removeVoice() {
+      if (!activeCard) return;
+      if (!audioRecordings[activeCard.id]) return;
+
+      if (!confirm(`Remove the custom voice for "${activeCard.label}"?`)) return;
+
+      delete audioRecordings[activeCard.id];
+      saveData();
+      refreshVoiceUI();
+      alert("Custom voice removed.");
+    }
+
+    /* ---------- UPLOAD VOICE FILE ---------- */
+    function handleVoiceUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (!activeCard) return;
+
+      // Optional size guard — localStorage typically allows ~5–10 MB total.
+      // Keep individual files reasonable.
+      const MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+      if (file.size > MAX_BYTES) {
+        if (!confirm(`This file is ${(file.size / 1024 / 1024).toFixed(2)} MB. Large files may exceed localStorage limits. Continue?`)) {
+          event.target.value = "";
+          return;
+        }
+      }
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        audioRecordings[activeCard.id] = e.target.result;
+        saveData();
+        refreshVoiceUI();
+        // Play a short preview
+        const preview = new Audio(e.target.result);
+        preview.playbackRate = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
+        preview.play().catch(() => {});
+        alert(`Voice file uploaded for "${activeCard.label}".`);
+      };
+      reader.onerror = () => {
+        alert("Could not read the audio file.");
+      };
+      reader.readAsDataURL(file);
+
+      // Reset so picking the same file twice triggers onchange again
+      event.target.value = "";
+    }
+
+    /* ---------- RECORDING ---------- */
     async function toggleRecord() {
       const recordBtn = document.getElementById("recordBtn");
+      const indicator = document.getElementById("recordingIndicator");
 
       if (!isRecording) {
         try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            audio: {
+              noiseSuppression: true,
+              echoCancellation: true,
+              autoGainControl: true,
+              channelCount: 1,
+              sampleRate: 48000
+            }
+          });
+
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          recordedSampleRate = audioContext.sampleRate;
+
+          sourceNode = audioContext.createMediaStreamSource(mediaStream);
+
+          highpassNode = audioContext.createBiquadFilter();
+          highpassNode.type = 'highpass';
+          highpassNode.frequency.value = 120;
+          highpassNode.Q.value = 0.7;
+
+          gainNode = audioContext.createGain();
+          gainNode.gain.value = 1.1;
+
+          sourceNode.connect(highpassNode);
+          highpassNode.connect(gainNode);
+
+          recordedSamples = [];
+          scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+          scriptProcessor.onaudioprocess = (e) => {
+            if (!isRecording) return;
+            const input = e.inputBuffer.getChannelData(0);
+            recordedSamples.push(new Float32Array(input));
+          };
+          gainNode.connect(scriptProcessor);
+          const mutedGain = audioContext.createGain();
+          mutedGain.gain.value = 0;
+          scriptProcessor.connect(mutedGain);
+          mutedGain.connect(audioContext.destination);
+
+          const destination = audioContext.createMediaStreamDestination();
+          gainNode.connect(destination);
+          mediaRecorder = new MediaRecorder(destination.stream);
           audioChunks = [];
 
-          mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+          mediaRecorder.ondataavailable = event => {
+            if (event.data.size > 0) audioChunks.push(event.data);
+          };
+
           mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const trimmedBlob = buildTrimmedWavFromSamples(recordedSamples, recordedSampleRate);
             const reader = new FileReader();
-            reader.readAsDataURL(audioBlob);
+            reader.readAsDataURL(trimmedBlob);
             reader.onloadend = () => {
               audioRecordings[activeCard.id] = reader.result;
               saveData();
+              refreshVoiceUI();
               alert(`Custom voice saved for "${activeCard.label}"!`);
             };
+            stopRecordingStream();
           };
 
           mediaRecorder.start();
+
           isRecording = true;
           recordBtn.innerText = "🛑 Stop Recording";
           recordBtn.style.background = "#EF4444";
+          if (indicator) indicator.classList.add("active");
+
         } catch (err) {
+          console.error(err);
           alert("Microphone access is required to record custom audio.");
+          stopRecordingStream();
         }
       } else {
-        mediaRecorder.stop();
         isRecording = false;
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+          mediaRecorder.stop();
+        }
         recordBtn.innerText = "🎙️ Record Custom Voice";
         recordBtn.style.background = "#F59E0B";
+        if (indicator) indicator.classList.remove("active");
       }
     }
 
+    /* ---------- BUILD TRIMMED WAV ---------- */
+    function buildTrimmedWavFromSamples(chunks, sampleRate) {
+      let totalLength = 0;
+      chunks.forEach(c => totalLength += c.length);
+      const flat = new Float32Array(totalLength);
+      let offset = 0;
+      chunks.forEach(c => { flat.set(c, offset); offset += c.length; });
+
+      const windowSize = Math.floor(sampleRate * 0.02);
+      const threshold = 0.018;
+
+      let startIndex = 0;
+      for (let i = 0; i + windowSize < flat.length; i += windowSize) {
+        let sum = 0;
+        for (let j = 0; j < windowSize; j++) {
+          const s = flat[i + j];
+          sum += s * s;
+        }
+        const rms = Math.sqrt(sum / windowSize);
+        if (rms > threshold) {
+          startIndex = Math.max(0, i - Math.floor(sampleRate * 0.05));
+          break;
+        }
+      }
+
+      const trimmed = flat.slice(startIndex);
+      return encodeWav(trimmed, sampleRate);
+    }
+
+    function encodeWav(samples, sampleRate) {
+      const buffer = new ArrayBuffer(44 + samples.length * 2);
+      const view = new DataView(buffer);
+
+      const writeString = (offset, string) => {
+        for (let i = 0; i < string.length; i++) {
+          view.setUint8(offset + i, string.charCodeAt(i));
+        }
+      };
+
+      writeString(0, 'RIFF');
+      view.setUint32(4, 36 + samples.length * 2, true);
+      writeString(8, 'WAVE');
+      writeString(12, 'fmt ');
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeString(36, 'data');
+      view.setUint32(40, samples.length * 2, true);
+
+      let offset = 44;
+      for (let i = 0; i < samples.length; i++, offset += 2) {
+        const s = Math.max(-1, Math.min(1, samples[i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
+      }
+
+      return new Blob([view], { type: 'audio/wav' });
+    }
+
+    function stopRecordingStream() {
+      try { if (sourceNode) sourceNode.disconnect(); } catch(e) {}
+      try { if (highpassNode) highpassNode.disconnect(); } catch(e) {}
+      try { if (gainNode) gainNode.disconnect(); } catch(e) {}
+      try { if (scriptProcessor) scriptProcessor.disconnect(); } catch(e) {}
+      try { if (audioContext && audioContext.state !== 'closed') audioContext.close(); } catch(e) {}
+      try {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(t => t.stop());
+        }
+      } catch(e) {}
+      sourceNode = null;
+      highpassNode = null;
+      gainNode = null;
+      scriptProcessor = null;
+      audioContext = null;
+      mediaStream = null;
+      recordedSamples = [];
+    }
+
+    /* ---------- SENTENCE BAR ---------- */
     function updateSentenceBar() {
       const bar = document.getElementById("messageBar");
       bar.innerHTML = "";
@@ -1687,9 +2074,17 @@
         }
 
         cardEl.innerHTML = `
+          <button class="msg-close-btn" title="Remove word" aria-label="Remove word">✕</button>
           ${visualContent}
           <span>${card.label}</span>
         `;
+
+        const closeBtn = cardEl.querySelector(".msg-close-btn");
+        closeBtn.onclick = (e) => {
+          e.stopPropagation();
+          sentence.splice(index, 1);
+          updateSentenceBar();
+        };
 
         cardEl.onclick = () => {
           sentence.splice(index, 1);
@@ -1746,38 +2141,78 @@
       const item = playlist[index];
       const speed = parseFloat(document.getElementById("googleSpeedSelect").value) || 1.0;
 
+      const next = () => {
+        setTimeout(() => playSequentially(index + 1, playlist), 300);
+      };
+
       if (item.type === 'custom') {
         const audio = new Audio(item.src);
+        audio.preload = 'auto';
         audio.playbackRate = speed;
-        audio.onended = () => playSequentially(index + 1, playlist);
-        audio.onerror = () => playSequentially(index + 1, playlist);
-        audio.play().catch(() => playSequentially(index + 1, playlist));
+
+        let finished = false;
+        const done = () => {
+          if (finished) return;
+          finished = true;
+          next();
+        };
+
+        audio.onended = done;
+        audio.onerror = done;
+
+        const playPromise = audio.play();
+        if (playPromise && playPromise.then) {
+          playPromise.then(() => {
+            const duration = (audio.duration && isFinite(audio.duration))
+              ? audio.duration / speed
+              : 2;
+            setTimeout(done, (duration * 1000) + 600);
+          }).catch(done);
+        }
       } else if (item.type === 'tts') {
         const text = item.text;
         const lang = document.getElementById("googleLangSelect").value;
         const encodedText = encodeURIComponent(text);
         const googleTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${lang}&client=tw-ob&q=${encodedText}`;
         const audio = new Audio(googleTtsUrl);
+        audio.preload = 'auto';
         audio.playbackRate = speed;
-        audio.onended = () => playSequentially(index + 1, playlist);
+
+        let finished = false;
+        const done = () => {
+          if (finished) return;
+          finished = true;
+          next();
+        };
+
+        audio.onended = done;
         audio.onerror = () => {
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
           utterance.rate = speed;
-          utterance.onend = () => playSequentially(index + 1, playlist);
-          utterance.onerror = () => playSequentially(index + 1, playlist);
+          utterance.onend = done;
+          utterance.onerror = done;
           window.speechSynthesis.speak(utterance);
         };
-        audio.play().catch(() => {
-          window.speechSynthesis.cancel();
-          const utterance = new SpeechSynthesisUtterance(text);
-          utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
-          utterance.rate = speed;
-          utterance.onend = () => playSequentially(index + 1, playlist);
-          utterance.onerror = () => playSequentially(index + 1, playlist);
-          window.speechSynthesis.speak(utterance);
-        });
+
+        const playPromise = audio.play();
+        if (playPromise && playPromise.then) {
+          playPromise.then(() => {
+            const duration = (audio.duration && isFinite(audio.duration))
+              ? audio.duration / speed
+              : 3;
+            setTimeout(done, (duration * 1000) + 800);
+          }).catch(() => {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = lang === 'ms' ? 'ms-MY' : (lang === 'zh-CN' ? 'zh-CN' : 'en-US');
+            utterance.rate = speed;
+            utterance.onend = done;
+            utterance.onerror = done;
+            window.speechSynthesis.speak(utterance);
+          });
+        }
       }
     }
 
